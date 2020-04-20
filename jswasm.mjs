@@ -1,4 +1,4 @@
-WebAssembly.instantiateStreaming(fetch('add.wasm'), importObject)
+WebAssembly.instantiateStreaming(fetch('add.wasm'))
 .then(results => {
-    console.log(obj.instance.exports.add(1, 2));
+    console.log(results.instance.exports.add(1, 2));
 })
