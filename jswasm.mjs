@@ -9,3 +9,4 @@ WebAssembly.instantiateStreaming(fetch('add.wasm'))
         i++;
     } while (i<9999999);
 })
+//ROARINGLY BORING CHANGE
