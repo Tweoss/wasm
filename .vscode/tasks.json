@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "npm: start",
+			"detail": "npm run lite",
+			"group": "build"
+		},
+		{
+			"type": "shell",
+			"label": "wasm: compile",
+			"command": "wat2wasm",
+			"args": [
+				"${fileBasenameNoExtension}.wat",
+				"-o",
+				"${fileBasenameNoExtension}.wasm"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Build and Exec",
+			"dependsOn": [
+				"wasm: compile",
+				"npm: start"
+			],
+			"dependsOrder": "sequence",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+			
+		}
+	]
+}
