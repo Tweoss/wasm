@@ -6,17 +6,17 @@
         (local $offset i32)                             ;; offset
         (local.set $offset (i32.load (i32.const 0)))    ;; load offset from the first i32 (begins at 0)
 
-        (i32.store (local.get $offset)                  ;; load the length (param)
-                   (local.get $len)                     ;;
+        (i32.store (local.get $offset)                  ;; store the length of the new array at the offset
+                   (local.get $len)                     ;; load the length (param)
         )   
 
-        (i32.store (i32.const 0)                        ;; store offset of available space
-                   (i32.add                             ;; add offset and length*4 and 45
+        (i32.store (i32.const 0)                        ;; store new offset of available space (at first i32)
+                   (i32.add                             ;; add offset and length*4 and 4<--length of new array
                        (i32.add                         ;; add offset and length*4
-                           (local.get $offset)
-                           (i32.mul
-                               (local.get $len)
-                               (i32.const 4)            ;; mul length by 4
+                           (local.get $offset)          ;; load offset
+                           (i32.mul                     ;; multiply length by 4
+                               (local.get $len)         ;; load length
+                               (i32.const 4)            ;; load 4
                            )
                        )
                        (i32.const 4)                    ;; the first i32 is the length
