@@ -1,3 +1,20 @@
+var memory = new WebAssembly.Memory({ initial : 1 });
+
+      function consoleLogString(offset, length) {
+        // var bytes = new Uint8Array(memory.buffer, offset, length);
+        // var string = new TextDecoder('utf8').decode(bytes);
+        console.log(string);
+      }
+
+      var importObject = {
+        env: {
+          log: consoleLogString
+        },
+        js: {
+          mem: memory
+        }
+      };
+
 WebAssembly.instantiateStreaming(fetch('add.wasm'))
 .then(results => {
     var i = 0;
