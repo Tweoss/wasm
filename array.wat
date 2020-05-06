@@ -1,7 +1,8 @@
 (module
     (import "env" "log" (func $log (param i32)))
+    (import "js"  "log" (func $lon (param i32)))
     (memory 1)
-    ;; create an array
+    ;; create an array (i32 is 4 bytes)
     (func $arr (param $len i32) (result i32)
         (local $offset i32)                             ;; offset
         (local.set $offset (i32.load (i32.const 0)))    ;; load offset from the first i32 (begins at 0)
@@ -12,17 +13,17 @@
 
         (i32.store (i32.const 0)                        ;; store new offset of available space (at first i32)
                    (i32.add                             ;; add offset and length*4 and 4<--length of new array
-                       (i32.add                         ;; add offset and length*4
+                       (i32.add                         ;; add offset and length*4 
                            (local.get $offset)          ;; load offset
-                           (i32.mul                     ;; multiply length by 4
-                               (local.get $len)         ;; load length
+                           (i32.mul                     ;; multiply length by 4 (bc each i32 is 4 bytes)
+                               (local.get $len)         ;; load length 
                                (i32.const 4)            ;; load 4
                            )
                        )
                        (i32.const 4)                    ;; the first i32 is the length
                    )
         )
-        (local.get $offset)                             ;; (return) the beginning offset of the array.
+        (local.get $offset)                             ;; (return) the beginning offset of the new array.
     )
     ;; return the array length
     (func $len (param $arr i32) (result i32)
@@ -55,10 +56,14 @@
         ;; so the initial offset should be 4 (bytes)
         (i32.store (i32.const 0) (i32.const 4))
 
-        (local.set $a1 (call $arr (i32.const 5)))   ;; create an array with length 0 and assign to $a1
+        (local.set $a1 (call $arr (i32.const 5)))   ;; create an array with length 5 and assign to $a1
 
         (call $len (local.get $a1))
-        call $log                                   ;; print length 5
+        call $lon                                   ;; print length 5
+
+        i32.const 1
+        i32.const 990
+        i32.store
 
         ;; set 10 at the index 1 in $a1
         (call $set (local.get $a1) (i32.const 1) (i32.const 10))
@@ -67,5 +72,5 @@
         (call $get (local.get $a1) (i32.const 1))
         call $log                                   ;; print the element value 10
     )
-    (start $main)
+    (export "main" (func $main))
 )

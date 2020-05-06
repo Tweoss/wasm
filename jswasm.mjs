@@ -1,9 +1,12 @@
 var memory = new WebAssembly.Memory({ initial : 1 });
 
-      function consoleLogString(offset, length) {
-        // var bytes = new Uint8Array(memory.buffer, offset, length);
+      function consoleLogString(length, offset) {
+         var bytes = new Uint8Array(memory.buffer, length, offset);
         // var string = new TextDecoder('utf8').decode(bytes);
-        console.log(string);
+        console.log(bytes);
+      }
+      function consoleLogOne(log) {
+        console.log(log);
       }
 
       var importObject = {
@@ -11,19 +14,13 @@ var memory = new WebAssembly.Memory({ initial : 1 });
           log: consoleLogString
         },
         js: {
-          mem: memory
+          mem: memory,
+          log: consoleLogOne
         }
       };
 
-WebAssembly.instantiateStreaming(fetch('add.wasm'))
+WebAssembly.instantiateStreaming(fetch('array.wasm'),importObject)
 .then(results => {
-    var i = 0;
-    do {
-        //wait(4000);
-        if (i%9999 == 1){
-            setTimeout(console.log(results.instance.exports.add(i, 2)),10000000);
-        }
-        i++;
-    } while (i<9999999);
+  results.instance.exports.main;
 })
 //ROARINGLY BORING CHANGE
