@@ -1,5 +1,5 @@
 (module
-	(import "env" "log" (func $log (param i32)))
+	(import "env" "log" (func $log (param i32) (param i32)))
 	(import "js"  "log" (func $lon (param i32)))
 	(memory 1)
 	;; create an array (i32 is 4 bytes)
@@ -64,13 +64,26 @@
 		;; set 10 at the index 1 in $a1
 		(call $set (local.get $a1) (i32.const 1) (i32.const 10))
 
-
-		(call $len (local.get $a1))
-		call $lon                                   ;; print length 5
-
 		;; get 10 at the index 1
-		(call $get (local.get $a1) (i32.const 1))
-		call $log                                   ;; print the element value 10
+		 
+		 
+		(call $lon (call $get (local.get $a1) (i32.const 1)))          ;; print the element value 10
+
+		(i32.store (i32.const 0) (i32.const 9))
+		(i32.store (i32.const 1) (i32.const 8))
+		(i32.store (i32.const 2) (i32.const 7))
+		(i32.store (i32.const 3) (i32.const 6))
+		(i32.store (i32.const 4) (i32.const 5))
+		(i32.store (i32.const 5) (i32.const 4))
+		(i32.store (i32.const 6) (i32.const 3))
+		(i32.store (i32.const 7) (i32.const 2))
+		(i32.store (i32.const 8) (i32.const 1))
+
+
+		(i32.const 0) (i32.const 9)
+		call $log
+		(i32.const 1) (i32.const 9)
+		call $log
 	)
 	(start $main)
 	;; (export "main" (func $main))
