@@ -26,7 +26,7 @@ WebAssembly.instantiateStreaming(fetch('array.wasm'),importObject)
   console.log(new Uint32Array(results.instance.memo,0,9))
   // var array = new Uint8Array(memory,100,0);
   console.log(memory);
-
+  exports('array.wasm')
   
 })
 

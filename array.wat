@@ -1,7 +1,7 @@
 (module
 	(import "env" "log" (func $log (param i32) (param i32)))
 	(import "js"  "log" (func $lon (param i32)))
-	(memory (export "memo") 1);;(import "js" "mem") 1)
+	(memory $mem 1);;(import "js" "mem") 1)
 	;; create an array (i32 is 4 bytes)
 	(func $arr (param $len i32) (result i32)
 		(local $offset i32)                             ;; offset
@@ -87,5 +87,5 @@
 	)
 	;; (start $main)
 	(export "main" (func $main))
-	;; (export "memo" (memory $memo))
+	(export "memo" (memory $mem))
 ) 
