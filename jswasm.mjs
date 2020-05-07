@@ -21,11 +21,18 @@ var memory = new WebAssembly.Memory({ initial : 1 });
 
 WebAssembly.instantiateStreaming(fetch('array.wasm'),importObject)
 .then(results => {
-  // results.instance.exports.main;
-  consoleLogString(0,9);
-  console.log(new Uint32Array(memory.buffer)[0])
+  results.instance.exports.main;
+  // consoleLogString(0,9);
+  console.log(new Uint32Array(results.instance.memo,0,9))
+  // var array = new Uint8Array(memory,100,0);
+  console.log(memory);
+
   
 })
 
-  consoleLogString(9,0);
+  // consoleLogString(9,0);
 //ROARINGLY BORING CHANGE
+
+
+
+
