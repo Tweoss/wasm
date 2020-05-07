@@ -21,6 +21,6 @@ var memory = new WebAssembly.Memory({ initial : 1 });
 
 WebAssembly.instantiateStreaming(fetch('array.wasm'),importObject)
 .then(results => {
-  results.instance.exports.main;
+  // results.instance.exports.main;
 })
 //ROARINGLY BORING CHANGE
