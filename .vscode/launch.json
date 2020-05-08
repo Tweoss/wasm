@@ -1,17 +1,60 @@
+// {
+//     // Use IntelliSense to learn about possible attributes.
+//     // Hover to view descriptions of existing attributes.
+//     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//     "version": "0.2.0",
+//     "configurations": [
+//         {
+//             "name": "Attach to node",
+//             "type": "node",
+//             "request": "attach",
+//             // "restart": true,
+//             "port": 10001
+//           }
+//     ]
+// }
+// {
+//     "name": "Launch via npm",
+//     "type": "node",
+//     "request": "launch",
+//     "cwd": "${workspaceFolder}",
+//     "runtimeExecutable": "npm",
+//     "runtimeArgs": ["run-script", "debug"],
+//     "port": 10001
+//   }
+
+// {
+//     "type": "node",
+//     "request": "attach",
+//     "name": "Attach to Program",
+//     "program": "${workspaceFolder}/app.js",
+//     "miDebuggerServerAddress": "http://localhost:10001/"
+  
+//     "serverReadyAction": {
+//       "pattern": "listening on port ([0-9]+)",
+//       "uriFormat": "http://localhost:%s",
+//       "action": "openExternally"
+//     }
+//   }
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "chrome",
+            "name": "Launch Chrome against localhost",
             "request": "launch",
-            "name": "Brave",
             "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
             "userDataDir": true,
-            "url": "file:///${workspaceFolder}/index.html",
-            "webRoot": "${workspaceFolder}"
+            "url": "http://localhost:10001",
+            "webRoot": "${workspaceRoot}"
+            // "preLaunchTask": "${defaultBuildTask}"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 10001,
+            "webRoot": "${workspaceRoot}"
         }
     ]
 }
