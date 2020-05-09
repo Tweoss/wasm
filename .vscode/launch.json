@@ -13,8 +13,8 @@
             "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
             "userDataDir": true,
             "url": "http://localhost:10001/",
-            "webRoot": "${workspaceRoot}"
-            // "preLaunchTask": "${defaultBuildTask}"
+            "webRoot": "${workspaceRoot}",
+            "preLaunchTask": "${defaultBuildTask}"
         },
         {
             "type": "chrome",
