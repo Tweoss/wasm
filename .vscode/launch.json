@@ -1,41 +1,8 @@
-// {
+
 //     // Use IntelliSense to learn about possible attributes.
 //     // Hover to view descriptions of existing attributes.
 //     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-//     "version": "0.2.0",
-//     "configurations": [
-//         {
-//             "name": "Attach to node",
-//             "type": "node",
-//             "request": "attach",
-//             // "restart": true,
-//             "port": 10001
-//           }
-//     ]
-// }
-// {
-//     "name": "Launch via npm",
-//     "type": "node",
-//     "request": "launch",
-//     "cwd": "${workspaceFolder}",
-//     "runtimeExecutable": "npm",
-//     "runtimeArgs": ["run-script", "debug"],
-//     "port": 10001
-//   }
 
-// {
-//     "type": "node",
-//     "request": "attach",
-//     "name": "Attach to Program",
-//     "program": "${workspaceFolder}/app.js",
-//     "miDebuggerServerAddress": "http://localhost:10001/"
-  
-//     "serverReadyAction": {
-//       "pattern": "listening on port ([0-9]+)",
-//       "uriFormat": "http://localhost:%s",
-//       "action": "openExternally"
-//     }
-//   }
 {
     "version": "0.2.0",
     "configurations": [
