@@ -9,10 +9,12 @@
             "type": "chrome",
             "name": "Launch Brave against localhost",
             "request": "launch",
-            "runtimeExecutable": "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
-            "userDataDir": "${workspaceRoot}/.gitignore/brave",
+            "runtimeExecutable": "/Applications/Brave Browser Dev.app/Contents/MacOS/Brave Browser Dev",
+            "userDataDir": true,//"${workspaceRoot}/.gitignore/brave",
             "sourceMaps": true,
             "url": "http://localhost:10001/",
+            // "trace": true,
+            "port": 10001,
             "webRoot": "${workspaceRoot}"
             // "preLaunchTask": "${defaultBuildTask}"
         },
