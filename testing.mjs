@@ -15,7 +15,7 @@ const imports = {
 // const wasmModule = new WebAssembly.Module(wasmSource);
 // const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
 
-
+/*
 WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
 	function reverse(arr) {
@@ -30,14 +30,20 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		}
 		return result;
 	}
-	
+	function testfunc(x,y){
+		return results.instance.exports.test(x,y);
+	}
+	console.log(testfunc(3,3));
 	const numbers = [14, 3, 77];
 	console.log(numbers, 'becomes', reverse(numbers));
   
 })
+*/
 
 
 var canvas = document.getElementById('myCanvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 var ctx = canvas.getContext('2d');
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
@@ -49,5 +55,3 @@ for (var i = 0; i < data.length; i += 4) {
 	data[i + 3] = 255;               //alpha
 }
 ctx.putImageData(imageData, 0, 0);
-
-

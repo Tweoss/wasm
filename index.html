@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <style>
+    /* html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    } */
+    html, body {
+      /* width: 100%;
+      height: 100%; */
+      /* remove the extra whites around */
+      margin: 0;
+      overflow: hidden;
+    }
+    #canvas {
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+
 </head>
 
 <body>
-  <p id="paragraph">Paragraph</p>
   <!-- <script src="jswasm.mjs">//MAKE SURE TO CHANGE THIS</script> -->
   <canvas id="myCanvas" height="400" width="400" style="border:1px solid #000000;"></canvas>
   <script src="testing.mjs">//MAKE SURE TO CHANGE THIS</script>
