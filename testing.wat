@@ -28,14 +28,36 @@
     (f64.div)
   )
 
-  ;;takes the 3d coords and pushes to stack the 2d canvas coords
-  (func $proj (param $x f64) (param $y f64) (param $z f64))
-
-  (func (export "main") 
-    f64.store 
+  ;;takes the 3d coords and pushes to stack the 2d canvas coords 
+  ;;assumes viewer at 0,0,0 and plane at x = 1 and object is in front of plane
+  (func $proj (param $x f64) (param $yz f64) (result f64)
+    (local.get $yz)
+    (local.get $x)
+    (f64.div)
   )
 
-meow
+  ;;normalizes the canvas coords based on the size (assumes a 1280,720)
+  ;; (func $stretch (param ))
+
+
+  ;; assumes 1280, 720
+  (func (export "main") (param $x f64) (param $y f64) (param $z f64) 
+    (local $row i32)
+    (local $col i32)
+    (call $proj (local.get $x) (local.get $y))
+    (local.tee $row (i32.trunc_f64_u))
+    (i32.const 1280)
+    (i32.mul)
+    (call $proj (local.get $x) (local.get $z))
+    (local.tee $col (i32.trunc_f64_u))
+    (i32.add)
+    (i32.const 4)
+    (i32.mul)
+    (i32.const 4294967295) ;;2^32
+    (i32.store)
+  )
+
+
 
   ;; (func $average (param $address i32) (param $width i32)
   ;;   ;; address is mem address of place to average
