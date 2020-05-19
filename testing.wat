@@ -1,10 +1,10 @@
 (module
   (import "env" "memory" (memory 1))
 
-  ;; (func $_reverse (param i32) (param i32)
-  ;;   (i32.store (i32.const 1) (i32.const 256))
-  ;; )
-  ;; (export "_reverse" (func $_reverse))
+  (func $_reverse (param i32) (param i32)
+    (i32.store (i32.const 1) (i32.const 256))
+  )
+  (export "_reverse" (func $_reverse))
 
   ;; (func $strip (param $number i32) (param $bundle i32)
   ;;   ;; number is the address of the number to be modified
@@ -12,11 +12,6 @@
   ;;   i32.load8_u (i32.add ($number) (i32.mul $bundle i32.const 4))
   ;; )  
 
-  ;; (func $test (param $num i32) (param $address i32) (result i32)
-  ;;   (i32.store8 (local.get $num) (local.get $address))
-  ;;   (i32.const 1)
-  ;; )
-  ;; (export "test" (func $_reverse))
 
   ;;takes two numbers and avgs them, f64 encodes with 11 bit exponent and 52 bit mantissa
   (func $avg (param $num1 f64) (param $num2 f64) (result f64)
@@ -37,25 +32,40 @@
   )
 
   ;;normalizes the canvas coords based on the size (assumes a 1280,720)
-  ;; (func $stretch (param ))
+  (func $normx (param $x f64) (result f64)
+    (local.get $x)
+    (f64.const 640)
+    (f64.add)
+  )
+  (func $normy (param $y f64) (result f64)
+    (local.get $y)
+    (f64.const 360)
+    (f64.add)
+  )
 
 
   ;; assumes 1280, 720
-  (func (export "main") (param $x f64) (param $y f64) (param $z f64) 
+  (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32) (result i32)
     (local $row i32)
     (local $col i32)
-    (call $proj (local.get $x) (local.get $y))
+    (call $proj (local.get $x) (local.get $y)) ;; 2d equiv is y
+    (call $normy)
     (local.tee $row (i32.trunc_f64_u))
     (i32.const 1280)
     (i32.mul)
-    (call $proj (local.get $x) (local.get $z))
+    (call $proj (local.get $x) (local.get $z)) ;; 2d equiv is x
+    (call $normx)
     (local.tee $col (i32.trunc_f64_u))
     (i32.add)
     (i32.const 4)
     (i32.mul)
-    (i32.const 4294967295) ;;2^32
+    (local.get $color) ;;11111111000000001111111111111111
     (i32.store)
+
+    (i32.const 1)
   )
+
+
 
 
 
