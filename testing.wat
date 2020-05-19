@@ -45,7 +45,7 @@
 
 
   ;; assumes 1280, 720
-  (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32) (result i32)
+  (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color f64) 
     (local $row i32)
     (local $col i32)
     (call $proj (local.get $x) (local.get $y)) ;; 2d equiv is y
@@ -59,10 +59,9 @@
     (i32.add)
     (i32.const 4)
     (i32.mul)
-    (local.get $color) ;;11111111000000001111111111111111
-    (i32.store)
 
-    (i32.const 1)
+    (i32.const 4278255615) ;; color
+    (i32.store)
   )
 
 

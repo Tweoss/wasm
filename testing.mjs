@@ -38,17 +38,18 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		}
 		return result;
 	}
-	function testfunc(x,y,z){
-		return results.instance.exports.main(x,y,z);
+	function testfunc(x,y,z,color){
+		return results.instance.exports.main(x,y,z,color);
 	}
-	for(i = 3; i<1003;i++){
-		testfunc(i,10,3);
-	}
-	var j, k;
-	for(i = 3; i<1003;i++){
-		for (j=0;j<1003;j++){
-			for (k=0;k<1003;k++){
-				testfunc(4,i,j);
+	// for(i = 3; i<1003;i++){
+	// 	testfunc(i,10,3);
+	// }
+	var i, j, k;
+	var color = parseInt("FF00FFFF",16);
+	for(i = 1; i<100;i++){
+		for (j = 1;j<100;j++){
+			for (k = 1;k<100;k++){
+				testfunc(i,j,k,color);
 			}
 		}
 	}
