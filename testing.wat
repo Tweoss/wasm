@@ -48,12 +48,12 @@
   (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color f64) 
     (local $row i32)
     (local $col i32)
-    (call $proj (local.get $x) (local.get $y)) ;; 2d equiv is y
+    (call $proj (local.get $x) (local.get $z)) ;; 2d equiv is y
     (call $normy)
     (local.tee $row (i32.trunc_f64_u))
     (i32.const 1280)
     (i32.mul)
-    (call $proj (local.get $x) (local.get $z)) ;; 2d equiv is x
+    (call $proj (local.get $x) (local.get $y)) ;; 2d equiv is x
     (call $normx)
     (local.tee $col (i32.trunc_f64_u))
     (i32.add)

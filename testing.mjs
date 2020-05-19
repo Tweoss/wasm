@@ -46,14 +46,22 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	// }
 	var i, j, k;
 	var color = parseInt("FF00FFFF",16);
-	for(i = 1; i<100;i++){
-		for (j = 1;j<100;j++){
-			for (k = 1;k<100;k++){
+	for(i = 1; i<100; i++){
+		for (j = 0; j<100; j++){
+			for (k = 0; k<200; k++){
 				testfunc(i,j,k,color);
 			}
 		}
 	}
-
+	var color = parseInt("0FF00FFF",16);
+	for(i = 1; i<100; i++){
+		for (j = 0; j<100; j++){
+			for (k = 0; k<200; k++){
+				testfunc(i,j,k,color);
+			}
+		}
+	}
+	
 	for (var i = 0; i < data.length; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
