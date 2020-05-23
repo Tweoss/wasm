@@ -45,23 +45,53 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	// 	testfunc(i,10,3);
 	// }
 	var i, j, k;
-	var color = parseInt("FF00FFFF",16);
-	for(i = 1; i<100; i++){
-		for (j = 0; j<100; j++){
-			for (k = 0; k<200; k++){
-				testfunc(i,j,k,color);
-			}
+	var color
+	// x = 1
+	color = parseInt("FFFFF0F0",16);
+	for (j = 21; j<321; j++){
+		for (k = 21; k<321; k++){
+			testfunc(21,j,k,color);
 		}
 	}
-	var color = parseInt("0FF00FFF",16);
-	for(i = 1; i<100; i++){
-		for (j = 0; j<100; j++){
-			for (k = 0; k<200; k++){
-				testfunc(i,j,k,color);
-			}
+	// y = 1
+	color = parseInt("FCBA03F0",16);
+	for(i = 21; i<321; i+= .01){
+		for (j = 21; j<321; j++){
+			testfunc(i,21,j,color);
+		}
+	}
+	// z = 1
+	color = parseInt("00FFFFF0",16);
+	for(i = 21; i<321; i+= .01){
+		for (j = 21; j<321; j++){
+			testfunc(i,j,21,color);
+		}
+	}
+	// x = 301
+	color = parseInt("FFFF00F0",16);
+	for (j = 21; j<321; j++){
+		for (k = 21; k<321; k++){
+			testfunc(321,j,k,color);
 		}
 	}
 	
+	// y = 301
+	color = parseInt("F00FFFF0",16);
+	for(i = 21; i<321; i+= .01){
+		for (k = 21; k<321; k++){
+			testfunc(i,321,k,color);
+		}
+	}
+	// z = 301
+	color = parseInt("F0F0F0F0",16);
+	for(i = 21; i<321; i+= .01){
+		for (j = 21; j<321; j++){
+			testfunc(i,j,321,color);
+		}
+	}
+	
+	
+
 	for (var i = 0; i < data.length; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
