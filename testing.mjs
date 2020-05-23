@@ -1,13 +1,23 @@
-// const fs = require('fs');
+/*  INFO  *//*
+Proper projections
+Bezier curve generating mesh or straight to canvas
+
+/*        *///
+
+function consoleLogOne(log) {
+	console.log(log);
+  }
+
 
 const memory = new WebAssembly.Memory({
-	initial: 256,
+	initial: 1,
 	maximum: 256
 });
 const heap = new Uint8Array(memory.buffer);
 const imports = {
 	env: {
-		memory: memory
+		memory: memory,
+		log: consoleLogOne
 	}
 };
 
@@ -41,6 +51,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	function testfunc(x,y,z,color){
 		return results.instance.exports.main(x,y,z,color);
 	}
+	resuresults.instance.exports.max(2,5,0);
+
 	// for(i = 3; i<1003;i++){
 	// 	testfunc(i,10,3);
 	// }
