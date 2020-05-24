@@ -25,7 +25,7 @@
 )
 
 ;;takes three args and returns the min
-(func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32)
+(func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $min i32)
 		(local.get $n1)
 				(local.get $n1) 
@@ -51,10 +51,10 @@
 			(i32.shr_u)
 		(i32.and)
 	(i32.sub)
-	(call $log)
+	;; (call $log)
 )
 ;;takes three args and returns the max
-(func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32)
+(func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $max i32)
 		(local.get $n2)
 				(local.get $n1) 
@@ -80,7 +80,7 @@
 			(i32.shr_u)
 		(i32.and)
 	(i32.add)
-	(call $log)
+	;; (call $log)
 )
 
 ;;takes the 3d coords and pushes to stack the 2d canvas coords 
@@ -254,14 +254,10 @@
 			(block 
 				(loop ;;loop through the y bounds of the projected triangle
 				
-
 				(call $pshade
-					(call $norm (local.get $i) (local.get $j))
-					(local.get $yr0)
-					(local.get $xr1)
-					(local.get $yr1)
-					(local.get $xr2)
-					(local.get $yr2)
+					(call $normix (local.get $i))
+					(call $normiy (local.get $j))
+					(local.get $color)
 				)
 				;;loop logic (increment, break if over)
 				(local.set $i (call $increment (local.get $i)))
@@ -277,7 +273,7 @@
 			(br 0)
 			)
 		)
-		(call $proj (local.get $x0) (local.get $z0))
+		;; (call $proj (local.get $x0) (local.get $z0))
 
 	);;the end of the main
 	);;if block
