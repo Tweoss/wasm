@@ -40,8 +40,9 @@
 				}
 			},
 			"presentation": {
-				"focus": true,
-				
+				"reveal": "never",
+				"showReuseMessage": false,
+				"revealProblems": "onProblem"
 			}
 		},
 		{

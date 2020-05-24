@@ -24,8 +24,7 @@
 		(f64.div)
 	)
 
-	;;takes three args and returns the min (naive)
-
+	;;takes three args and returns the min
 	(func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32)
 		(local $min i32)
 			(local.get $n1)
@@ -54,8 +53,7 @@
 		(i32.sub)
 		(call $log)
 	)
-
-	;;takes three args and returns the max (naive)
+	;;takes three args and returns the max
 	(func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32)
 		(local $max i32)
 			(local.get $n2)
@@ -106,17 +104,50 @@
 		(local.get $y)
 		(f64.sub)
 	)
-	;;returns the one dimensional array pointer from 2d canvas coords (assumes 1280,720)
-	(func $memx (param $x i32) (param $y i32) (result i32)
+
+	;;returns the one dimensional array pointer from 2d canvas coords
+	;;(assumes 1280,720)
+	(func $mem (param $x i32) (param $y i32) (result i32)
 		(i32.add
-			(local.get $x)
-			(i32.mul
-				(local.get $y)
+				(i32.const 640)
+				(local.get $x)
+			(i32.sub)
+					(i32.const 360)
+					(local.get $y)
+				(i32.sub)
 				(i32.const 1280)
-			)
+			(i32.mul)
 		)
 		(i32.const 4)
 		(i32.mul)
+	)
+
+	;;shades a pixel (bounds checking)
+	(func $pshade (export "pshade") (param $x i32) (param $y i32) (param $color i32)
+				(i32.ge_s (local.get $x) (i32.const 0	))
+				(i32.lt_s (local.get $x) (i32.const 1280))
+			(i32.and)
+				(i32.ge_s (local.get $y) (i32.const 0	))
+				(i32.lt_s (local.get $y) (i32.const 720	))
+			(i32.and)
+		(i32.and)
+		
+		(if 
+			(then
+				(local.get $y)
+				(local.get $x)
+				(call $mem)
+					(local.get $y)
+					(local.get $x)
+					(call $mem)
+				(call $log)
+				(local.get $color)
+
+				(i32.store)
+			)
+		
+		)
+
 	)
 
 	(func $increment (param $x i32) (result i32)
@@ -124,6 +155,8 @@
 		(i32.const 1)
 		(i32.add)
 	)
+
+
 
 	;; assumes 1280, 720 
 	(func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32) 
@@ -145,7 +178,7 @@
 		(i32.store)
 
 	)
-
+	
 
 	;;when passing in, pass triangle with highest x (or y (or z)) then go counterclockwise
 
@@ -154,27 +187,39 @@
 	;; 	(local $yr0 i32);;(rounded)
 	;; 	(local $xr1 i32)
 	;; 	(local $yr1 i32)
+	;; 	(local $xr2 i32)
+	;; 	(local $yr2 i32)
 	;; 	(local $xc0 f64);;canvas coords
 	;; 	(local $yc0 f64);;(not rounded)
 	;; 	(local $xc1 f64)
 	;; 	(local $yc1 f64)
+	;; 	(local $xc2 f64)
+	;; 	(local $yc2 f64)
+	;; 	(local $xb0 i32);;bounding box (rounded)
+	;; 	(local $yb0 i32)
+	;; 	(local $xb1 i32)
+	;; 	(local $yb1 i32)
+	;; 	(local $i	i32);;arbitrary indeces
+	;; 	(local $j	i32)
 	;; 	(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
 	;; 	(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
+	;; 	(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
+	;; 	(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
+	;; 	(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
+	;; 	(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 		
 	;; 	;; (local.set $xc0)
 	;; 	;; (local $xc2 i32)
 	;; 	;; (local $yc2 i32)
-	;; 	(local $i i32);;arbitrary indeces
-	;; 	(local $j i32)
-	;; 	(local.set $i 0)
-	;; 	(local.set $j 0)
-	;; 	(local $xb0);;bounding box
-	;; 	(local $yb0)
-	;; 	(local $xb1)
-	;; 	(local $yb1)
-		
-		
 
+	;; 	(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+	;; 	(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+	;; 	(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+	;; 	(local.set $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		
+	;; 	(local.set $i (local.get $xb0))
+	;; 	(local.set $j (local.get $yb0))
+		
 	;; 	(block 
 	;; 		(loop 
 
@@ -184,14 +229,14 @@
 	;; 				(get_local $x)
 	;; 				(get_local $y)
 	;; 			)
-	;; 			(set_local $x (call $increment (get_local $x)))
-	;; 			(br_if 1 (i32.eq (get_local $x) (i32.const 50)))
+	;; 			(local.set $i (call $increment (local.get $i)))
+	;; 			(br_if 1 (i32.eq (local.get $i) (local.get $xb1)))
 	;; 			(br 0)
 	;; 			)
 	;; 		)
 			
-	;; 		(set_local $y (call $increment (get_local $y)))
-	;; 		(br_if 1 (i32.eq (get_local $y) (i32.const 50)))
+	;; 		(local.set $j (call $increment (local.get $i)))
+	;; 		(br_if 1 (i32.eq (local.get $j) (local.get $yb1)))
 	;; 		(br 0)
 	;; 		)
 	;; 	)

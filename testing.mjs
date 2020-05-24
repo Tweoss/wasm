@@ -10,7 +10,7 @@ function consoleLogOne(log) {
 
 
 const memory = new WebAssembly.Memory({
-	initial: 1,
+	initial: 100,
 	maximum: 256
 });
 const heap = new Uint8Array(memory.buffer);
@@ -51,7 +51,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	function testfunc(x,y,z,color){
 		return results.instance.exports.main(x,y,z,color);
 	}
-	resuresults.instance.exports.max(2,5,0);
+	results.instance.exports.max(2,5,0);
 
 	// for(i = 3; i<1003;i++){
 	// 	testfunc(i,10,3);
@@ -112,7 +112,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	}
 	
 	ctx.putImageData(imageData, 0, 0);
-	console.log("PLACED");
+	// console.log("PLACED");
 	const numbers = [14, 3, 77];
 	// console.log(numbers, 'becomes', reverse(numbers));
 	
