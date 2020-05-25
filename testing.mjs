@@ -101,6 +101,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 			testfunc(i,j,321,color);
 		}
 	}
+	color = parseInt("FFFFF0F0",16);
+	// results.instance.exports.trishade(21,21,21,21,321,21,21,321,321,color);
 	
 	
 

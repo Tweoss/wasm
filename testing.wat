@@ -221,7 +221,7 @@
 	(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
 	(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 	
-	;;if at least some triangle is inside the canvas bounds
+	;;if at least some of the triangle is inside the canvas bounds
 	(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
 	(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
 	(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
@@ -243,6 +243,9 @@
 		(i32.or)
 	(i32.or)
 
+
+	;;;; ALL COORDS ARE NOT NORMALIZED (yet?)
+
 	(if	  ;;the start of the main
 	(then ;;if block
 		(local.set $i (local.get $xb0))
@@ -251,9 +254,31 @@
 		(block 
 			(loop ;;loop through the x bounds of the projected triangle
 
-			(block 
+			(block
 				(loop ;;loop through the y bounds of the projected triangle
+				;; if the point is either on or in the triangle
+				(if   ;;if the point is 
+					(f64.convert_i32_s (local.get $i))
+					(local.get $xc0)
+				(f64.s)
+				(then ;;inside the triangle
+
+	
+
+
 				
+				)
+				(else ;;if not inside the triangle
+				(if   ;;if the point is
+				(then ;;on a valid edge
+				
+				
+				) ;;end of valid edge then block
+				) ;;end of valid edge if block
+
+				) ;;end of valid point else block
+				) ;;end of valid point if block
+
 				(call $pshade
 					(call $normix (local.get $i))
 					(call $normiy (local.get $j))
