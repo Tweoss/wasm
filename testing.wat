@@ -260,7 +260,7 @@
 				(if   ;;if the point is 
 					(f64.convert_i32_s (local.get $i))
 					(local.get $xc0)
-				(f64.s)
+				(f64.sub)
 				(then ;;inside the triangle
 
 	
