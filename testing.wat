@@ -11,12 +11,12 @@
 ;;   ;; number is the address of the number to be modified
 ;;   ;; bundle gives which of the 4 bytes should be modified
 ;;   i32.load8_u (i32.add ($number) (i32.mul $bundle i32.const 4))
-;; )  
+;; )
 
 
 ;;takes two numbers and avgs them, f64 encodes with 11 bit exponent and 52 bit mantissa
 (func $avg (param $num1 f64) (param $num2 f64) (result f64)
-	(f64.add 
+	(f64.add
 		(local.get $num1)
 		(local.get $num2)
 	)
@@ -28,11 +28,11 @@
 (func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $min i32)
 		(local.get $n1)
-				(local.get $n1) 
+				(local.get $n1)
 				(local.get $n2)
 			(i32.sub)
 				(i32.const 31)
-					(local.get $n1) 
+					(local.get $n1)
 					(local.get $n2)
 				(i32.sub)
 			(i32.shr_u)
@@ -41,11 +41,11 @@
 	(local.set $min)
 
 		(local.get $min)
-				(local.get $min) 
+				(local.get $min)
 				(local.get $n3)
 			(i32.sub)
 				(i32.const 31)
-					(local.get $min) 
+					(local.get $min)
 					(local.get $n3)
 				(i32.sub)
 			(i32.shr_u)
@@ -57,11 +57,11 @@
 (func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $max i32)
 		(local.get $n2)
-				(local.get $n1) 
+				(local.get $n1)
 				(local.get $n2)
 			(i32.sub)
 				(i32.const 31)
-					(local.get $n1) 
+					(local.get $n1)
 					(local.get $n2)
 				(i32.sub)
 			(i32.shr_u)
@@ -70,11 +70,11 @@
 	(local.set $max)
 
 		(local.get $n3)
-				(local.get $max) 
+				(local.get $max)
 				(local.get $n3)
 			(i32.sub)
 				(i32.const 31)
-					(local.get $max) 
+					(local.get $max)
 					(local.get $n3)
 				(i32.sub)
 			(i32.shr_u)
@@ -83,7 +83,7 @@
 	;; (call $log)
 )
 
-;;takes the 3d coords and pushes to stack the 2d canvas coords 
+;;takes the 3d coords and pushes to stack the 2d canvas coords
 ;;assumes viewer at 0,0,0 and plane at x = 10 and object is in front of plane
 (func $proj (param $x f64) (param $yz f64) (result f64)
 	(local.get $yz)
@@ -143,8 +143,8 @@
 			(i32.lt_s (local.get $y) (i32.const 720	))
 		(i32.and)
 	(i32.and)
-	
-	(if 
+
+	(if
 		(then
 			(local.get $y)
 			(local.get $x)
@@ -157,7 +157,7 @@
 
 			(i32.store)
 		)
-	
+
 	)
 
 )
@@ -170,8 +170,8 @@
 
 
 
-;; assumes 1280, 720 
-(func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32) 
+;; assumes 1280, 720
+(func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32)
 	(local $row i32)
 	(local $col i32)
 	(call $proj (local.get $x) (local.get $z)) ;; 2d equiv is y
@@ -192,10 +192,10 @@
 )
 
 
-;;when passing in, pass triangle with highest x (or y (or z)) then go counterclockwise
+;;when passing in, pass triangle with highest x (or y (or z)) then go COUNTERCLOCKWISE
 
 (func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32)
-	
+
 	(local $xr0 i32);;canvas coords
 	(local $yr0 i32);;(rounded)
 	(local $xr1 i32)
@@ -212,15 +212,15 @@
 	(local $yb0 i32)
 	(local $xb1 i32)
 	(local $yb1 i32)
-	(local $i	i32);;arbitrary indeces
-	(local $j	i32)
+	(local $i	f64);;arbitrary indeces
+	(local $j	f64)
 	(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
 	(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
 	(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
 	(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
 	(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
 	(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
-	
+
 	;;if at least some of the triangle is inside the canvas bounds
 	(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
 	(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
@@ -248,33 +248,76 @@
 
 	(if	  ;;the start of the main
 	(then ;;if block
-		(local.set $i (local.get $xb0))
-		(local.set $j (local.get $yb0))
-		
-		(block 
+		(local.set $i (f64.convert_i32_s (local.get $xb0)))
+		(local.set $j (f64.convert_i32_s (local.get $yb0)))
+
+		(block
 			(loop ;;loop through the x bounds of the projected triangle
 
 			(block
 				(loop ;;loop through the y bounds of the projected triangle
+				
 				;; if the point is either on or in the triangle
-				(if   ;;if the point is 
-					(f64.convert_i32_s (local.get $i))
-					(local.get $xc0)
-				(f64.sub)
-				(then ;;inside the triangle
+								(local.get $i) ;;P.x
+								(local.get $xc0) ;;V0.x
+							(f64.sub)
+								(local.get $yc1) ;;V1.y
+								(local.get $yc0) ;;V0.y
+							(f64.sub)
+						(f64.mul)
+								(local.get $j) ;;P.y
+								(local.get $yc0) ;;V0.y 
+							(f64.sub)
+								(local.get $xc1) ;;V1.x
+								(local.get $xc0) ;;V0.x
+							(f64.sub)
+						(f64.mul)
+					(f64.sub)
+					(f64.const 0)
+				(f64.ge)
+				(if   ;;if the point is either
+				(then ;;on or in the triangle
+				
+				;;if the point is solidly inside the triangle
+								(local.get $i)		;;P.x
+								(local.get $xc0)	;;V0.x
+							(f64.sub)
+								(local.get $yc1)	;;V1.y
+								(local.get $yc0)	;;V0.y
+							(f64.sub)
+						(f64.mul)
+								(local.get $j)		;;P.y
+								(local.get $yc0)	;;V0.y 
+							(f64.sub)
+								(local.get $xc1)	;;V1.x
+								(local.get $xc0)	;;V0.x
+							(f64.sub)
+						(f64.mul)
+					(f64.sub)
+					(f64.const 0)
+				(f64.gt)
+				(if   ;;if the point is solidly
+					(then ;;inside the triangle
+						(call $pshade
+							(f64.convert_i32_s (call $normx (local.get $i)))
+							(f64.convert_i32_s (call $normy (local.get $j)))
+							(local.get $color)
+						)
+					) ;;end of inside tri then block
+					(else ;;if not inside the triangle the point must be on AN edge
+						
+						
+						(if   ;;if the point is
+						(then ;;on a VALID edge
 
-	
 
+						) ;;end of valid edge then block
+						) ;;end of valid edge if block
+					) ;;end of else (edge and not in triangle)
+				) ;;end of inside tri if block
 
 				
-				)
-				(else ;;if not inside the triangle
-				(if   ;;if the point is
-				(then ;;on a valid edge
 				
-				
-				) ;;end of valid edge then block
-				) ;;end of valid edge if block
 
 				) ;;end of valid point else block
 				) ;;end of valid point if block
@@ -322,8 +365,8 @@
 ;;   ;; width is width of canvas in pixels
 ;;   (local $target i32)
 ;;   (local.set $target (i32.load (local.get $address)))
-;;   (block 
-;;     (loop 
+;;   (block
+;;     (loop
 ;;       (i32.add
 ;;         (i32.add
 ;;           (i32.load (i32.add (local.get $target) (i32.mul (local.get $width) i32.const 4)))
@@ -337,4 +380,4 @@
 ;; )
 
 
-) ;;module end 
+) ;;module end
