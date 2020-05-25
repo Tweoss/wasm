@@ -104,18 +104,17 @@
 	(local.get $y)
 	(f64.sub)
 )
-;;and the integer version
-(func $normix (param $x i32) (result i32)
-	(i32.const 640)
-	(local.get $x)
-	(i32.sub)
-)
-(func $normiy (param $y i32) (result i32)
-	(i32.const 360)
-	(local.get $y)
-	(i32.sub)
-)
-
+	;; ;;and the integer version
+	;; (func $normix (param $x i32) (result i32)
+	;; 	(i32.const 640)
+	;; 	(local.get $x)
+	;; 	(i32.sub)
+	;; )
+	;; (func $normiy (param $y i32) (result i32)
+	;; 	(i32.const 360)
+	;; 	(local.get $y)
+	;; 	(i32.sub)
+	;; )
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
@@ -212,6 +211,9 @@
 	(local $yb0 i32)
 	(local $xb1 i32)
 	(local $yb1 i32)
+	(local $e01 i32);;validity t/f of edges (top left rule)
+	(local $e12 i32)
+	(local $e20 i32)
 	(local $i	f64);;arbitrary indeces
 	(local $j	f64)
 	(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
@@ -221,6 +223,130 @@
 	(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
 	(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 
+
+;;START EDGE TRUTH EVALUATION
+
+		;; 	(local.get $yc1) ;;next vertex
+		;; 	(local.get $yc0) ;;prev vertex
+		;; (f64.gt)
+		;; ;;left
+		;; 		(local.get $yc2) ;;next
+		;; 		(local.get $yc1) ;;prev
+		;; 	(f64.eq)
+		;; 		(local.get $xc2) ;;next
+		;; 		(local.get $xc1) ;;prev
+		;; 	(f64.gt)
+		;; (i32.and)
+		;; ;;top
+		;; (local.set $e11 (i32.const 1))
+
+		(local.get $yc1) 
+		(local.get $yc0)
+	(f64.gt)
+	(if ;;e01 is l
+	(then
+		(local.set $e01 (i32.const 1))
+			(local.get $yc2) 
+			(local.get $yc1)
+		(f64.gt)
+		(if ;;e12 is l
+		(then
+			(local.set $e12 (i32.const 1))
+			(local.set $e20 (i32.const 0))
+		)
+		(else
+					(local.get $yc2) ;;next
+					(local.get $yc1) ;;prev
+				(f64.eq)
+					(local.get $xc2) ;;next
+					(local.get $xc1) ;;prev
+				(f64.gt)
+			(i32.and)
+			(if ;;e12 is t
+			(then
+				(local.set $e12 (i32.const 1))
+				(local.set $e20 (i32.const 0))
+			)
+			(else ;;e12 is n
+				(local.set $e12 (i32.const 0))
+					(local.get $yc0) 
+					(local.get $yc2)
+				(f64.gt)
+				(if
+				(then
+					(local.set $e20 (i32.const 1))
+				)
+				(else
+					(local.set $e20 (i32.const 0))
+				)
+				)
+			)
+			)
+		)
+		)
+	)
+	(else
+				(local.get $yc1)
+				(local.get $yc0)
+			(f64.eq)
+				(local.get $xc1)
+				(local.get $xc0)
+			(f64.gt)
+		(i32.and)
+		(if ;;e01 is t
+		(then
+			(local.set $e01 (i32.const 1))
+			(local.set $e12 (i32.const 0))
+			(local.set $e20 (i32.const 1))
+		)
+		(else ;;e01 is n
+				(local.get $yc2)
+				(local.get $yc1)
+			(f64.gt);;)
+			(if ;;e12 is l
+			(then
+				(local.set $e12 (i32.const 1))
+					(local.get $yc0)
+					(local.get $yc2)
+				(f64.gt)
+				(if ;;e20 is l
+				(then
+					(local.set $e20 (i32.const 1))
+				)
+				(else
+							(local.get $yc0)
+							(local.get $yc2)
+						(f64.eq)
+							(local.get $xc0)
+							(local.get $xc2)
+						(f64.gt)
+					(i32.and)
+					(if ;;e20 is t
+					(then
+						(local.set $e20 (i32.const 1))
+					)
+					(else ;;e20 is n
+						(local.set $e20 (i32.const 0))
+					)
+					)
+				)
+				)
+			)
+			(else ;;e12 is n
+				(local.set $e12 (i32.const 0))
+				(local.set $e20 (i32.const 1))
+			)
+				
+			)
+		)
+		)
+	)
+	)
+
+;;END  EDGE TRUTH EVALUATION
+
+
+	
 	;;if at least some of the triangle is inside the canvas bounds
 	(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
 	(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
@@ -257,7 +383,7 @@
 			(block
 				(loop ;;loop through the y bounds of the projected triangle
 				
-				;; if the point is either on or in the triangle
+				;; if the point is either on or in the triangle the v0-v1 edge
 								(local.get $i) ;;P.x
 								(local.get $xc0) ;;V0.x
 							(f64.sub)
@@ -275,9 +401,22 @@
 					(f64.sub)
 					(f64.const 0)
 				(f64.ge)
-				(if   ;;if the point is either
-				(then ;;on or in the triangle
+				(if		;;if the point is on or 
+				(then	;;in the v0-v1 boundary
+				(if		;;if the point is on or
+				(then	;;in the v1-v2 boundary
 				
+				(if		;;if the point is on or
+				(then	;;in the v2-v0 boundary
+					(call $pshade
+							(f64.convert_i32_s (call $normx (local.get $i)))
+							(f64.convert_i32_s (call $normy (local.get $j)))
+							(local.get $color)
+					)
+				)		;;end of v2-v0 then
+				)		;;end of v2-v0 if
+				)		;;end of v1-v2 then
+				)		;;end of v1-v2 if
 				;;if the point is solidly inside the triangle
 								(local.get $i)		;;P.x
 								(local.get $xc0)	;;V0.x
@@ -320,7 +459,7 @@
 				
 
 				) ;;end of valid point else block
-				) ;;end of valid point if block
+				) ;;end of v0-v1
 
 				(call $pshade
 					(call $normix (local.get $i))
