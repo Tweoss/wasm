@@ -28,30 +28,30 @@
 ;;takes three args and returns the min
 (func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $min i32)
-		(local.get $n1)
+		(local.get $n2)
 				(local.get $n1)
 				(local.get $n2)
 			(i32.sub)
-				(i32.const 31)
 					(local.get $n1)
 					(local.get $n2)
 				(i32.sub)
-			(i32.shr_u)
+				(i32.const 31)
+			(i32.shr_s)
 		(i32.and)
-	(i32.sub)
-	(local.set $min)
-
-		(local.get $min)
+	(i32.add)
+	(local.tee $min)
+	(call $log)
+		(local.get $n3)
 				(local.get $min)
 				(local.get $n3)
 			(i32.sub)
-				(i32.const 31)
 					(local.get $min)
 					(local.get $n3)
 				(i32.sub)
-			(i32.shr_u)
+				(i32.const 31)
+			(i32.shr_s)
 		(i32.and)
-	(i32.sub)
+	(i32.add)
 	;; (call $log)
 )
 ;;takes three args and returns the max
@@ -385,15 +385,26 @@
 
 		(if	  ;;the start of the main
 		(then ;;if block
-			(local.set $i (f64.convert_i32_s (local.get $xb0)))
+			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 
 			(block
 				(loop ;;loop through the x bounds of the projected triangle
 
+				;;loop logic (set i to 0, increment j, break if over)
+				(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
+				(local.set $i (f64.convert_i32_s (local.get $xb0)))
+				(local.set $j (call $increment (local.get $j)))
+
 				(block
 					(loop ;;loop through the y bounds of the projected triangle
 						;;FOLD HERE if the point is in the triangle or on a valide edge or vertex	
+						
+						;;loop logic (end part) (increment, break if over)
+						;; (call $log (local.get $xb0))
+						(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+						(local.set $i (call $increment (local.get $i)))
+
 							;; if the point is in the triangle v0-v1 edge
 											(local.get $i) ;;P.x
 											(local.get $xc0) ;;V0.x
@@ -556,19 +567,16 @@
 
 
 
-						;;loop logic (increment, break if over)
-						(local.set $i (call $increment (local.get $i)))
+						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
-						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
-						(br 0)
+						(br 1)
 					)
 				)
 
 				;;loop logic (set i to 0, increment j, break if over)
 				(local.set $i (f64.const 0))
 				(local.set $j (call $increment (local.get $j)))
-				(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
-				(br 0)
+				(br 1)
 				)
 			)
 			;; (call $proj (local.get $x0) (local.get $z0))
@@ -581,26 +589,21 @@
 
 
 
-
-
-;; (func $average (param $address i32) (param $width i32)
-;;   ;; address is mem address of place to average
-;;   ;; width is width of canvas in pixels
-;;   (local $target i32)
-;;   (local.set $target (i32.load (local.get $address)))
-;;   (block
-;;     (loop
-;;       (i32.add
-;;         (i32.add
-;;           (i32.load (i32.add (local.get $target) (i32.mul (local.get $width) i32.const 4)))
-;;           (i32.load (i32.add (local.get $target) (i32.mul (local.get $width) i32.const 4)))
-;;         )
-;;       )
-;;       (br_if 1 (i32.eq (get_local $x) (i32.const 50)))
-;;       (br 0)
-;;     )
-;;   )
-;; )
-
+(func $test (export "test") (param $num i32) (param $rshift i32) (param $num2 i32)
+	
+	
+	(i32.shr_s (local.get $num) (local.get $rshift)) ;;signed rshift
+	(call $log)
+	(i32.shr_s (local.get $num) (local.get $rshift)) ;;signed rshift anded with num2
+	(i32.and (local.get $num2))
+	(call $log)
+	(i32.shr_u (local.get $num) (local.get $rshift)) ;;unsigned rshift
+	(call $log)
+	(i32.shr_u (local.get $num) (local.get $rshift)) ;;unsigned rshift anded with num2
+	(i32.and (local.get $num2))
+	(call $log)
+	(i32.sub (i32.const 0) (local.get $num)) ;;0-num
+	(call $log)
+)
 
 ) ;;module end
