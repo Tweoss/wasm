@@ -1,6 +1,7 @@
 (module ;;module start
 (import "env" "memory" (memory 1))
 (import "env" "log" (func $log (param i32)))
+(import "env" "log" (func $logf (param f64)))
 
 (func $_reverse (param i32) (param i32)
 	(i32.store (i32.const 1) (i32.const 256))
@@ -85,7 +86,7 @@
 
 ;;takes the 3d coords and pushes to stack the 2d canvas coords
 ;;assumes viewer at 0,0,0 and plane at x = 10 and object is in front of plane
-(func $proj (param $x f64) (param $yz f64) (result f64)
+(func $proj (export "proj") (param $x f64) (param $yz f64) (result f64)
 	(local.get $yz)
 	(local.get $x)
 	(f64.div)
@@ -355,11 +356,14 @@
 
 	;;START	MAIN IF BLOCK (IF SOME OF TRI IS IN CANVAS BOUNDS)
 	;;if at least some of the triangle is inside the canvas bounds
-		(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-		(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(local.set $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-
+		(local.tee $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.tee $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(local.tee $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.tee $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(call $log)
+		(call $log)
+		(call $log)
+		(call $log)
 						(i32.ge_s (local.get $xb0) (i32.const -640))
 						(i32.ge_s (local.get $xb1) (i32.const -640))
 				(i32.or)
@@ -554,7 +558,8 @@
 
 						;;loop logic (increment, break if over)
 						(local.set $i (call $increment (local.get $i)))
-						(br_if 1 (i32.eq (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+						;; (call $log (local.get $xb0))
+						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 						(br 0)
 					)
 				)
@@ -562,7 +567,7 @@
 				;;loop logic (set i to 0, increment j, break if over)
 				(local.set $i (f64.const 0))
 				(local.set $j (call $increment (local.get $j)))
-				(br_if 1 (i32.eq (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
+				(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
 				(br 0)
 				)
 			)
