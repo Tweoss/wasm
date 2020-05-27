@@ -355,12 +355,12 @@
 	;;START	MAIN IF BLOCK (IF SOME OF TRI IS IN CANVAS BOUNDS)
 	;;if at least some of the triangle is inside the canvas bounds
 		(local.tee $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(call $log)
 		(local.tee $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(call $log)
 		(local.tee $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(call $log)
 		(local.tee $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-		(call $log)
-		(call $log)
-		(call $log)
 		(call $log)
 						(i32.ge_s (local.get $xb0) (i32.const -640))
 						(i32.ge_s (local.get $xb1) (i32.const -640))
@@ -384,14 +384,15 @@
 		(if	  ;;the start of the main
 		(then ;;if block
 			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
-			(local.set $j (f64.convert_i32_s (local.get $yb0)))
-
+			(local.tee $j (f64.convert_i32_s (local.get $yb0)))
+			(call $logf)
 			(block
 				(loop ;;loop through the x bounds of the projected triangle
 
 				;;loop logic (set i to 0, increment j, break if over)
 				(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
-				(local.set $i (f64.convert_i32_s (local.get $xb0)))
+				(local.tee $i (f64.convert_i32_s (local.get $xb0)))
+				(call $logf)
 				(local.set $j (call $increment (local.get $j)))
 
 				(block
@@ -401,6 +402,10 @@
 						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
 						(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+
+						(call $log (i32.trunc_f64_s (call $normx (local.get $i))))
+						(call $log (i32.trunc_f64_s (call $normy (local.get $j))))
+
 						(local.set $i (call $increment (local.get $i)))
 
 							;; if the point is in the triangle v0-v1 edge
@@ -563,8 +568,6 @@
 							)
 							)
 
-
-
 						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
 						(br 1)
@@ -572,8 +575,6 @@
 				)
 
 				;;loop logic (set i to 0, increment j, break if over)
-				(local.set $i (f64.const 0))
-				(local.set $j (call $increment (local.get $j)))
 				(br 1)
 				)
 			)
@@ -589,19 +590,7 @@
 
 (func $test (export "test") (param $num i32) (param $rshift i32) (param $num2 i32)
 	
-	
-	(i32.shr_s (local.get $num) (local.get $rshift)) ;;signed rshift
-	(call $log)
-	(i32.shr_s (local.get $num) (local.get $rshift)) ;;signed rshift anded with num2
-	(i32.and (local.get $num2))
-	(call $log)
-	(i32.shr_u (local.get $num) (local.get $rshift)) ;;unsigned rshift
-	(call $log)
-	(i32.shr_u (local.get $num) (local.get $rshift)) ;;unsigned rshift anded with num2
-	(i32.and (local.get $num2))
-	(call $log)
-	(i32.sub (i32.const 0) (local.get $num)) ;;0-num
-	(call $log)
+	(call $pshade (i32.const 1) (i32.const 1) (i32.const 1))
 )
 
 ) ;;module end
