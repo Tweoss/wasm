@@ -161,8 +161,8 @@
 )
 
 (func $increment (param $x f64) (result f64)
-	(local.get $x)
-	(f64.const 1)
+		(local.get $x)
+		(f64.const 1)
 	(f64.add)
 )
 
@@ -354,14 +354,10 @@
 
 	;;START	MAIN IF BLOCK (IF SOME OF TRI IS IN CANVAS BOUNDS)
 	;;if at least some of the triangle is inside the canvas bounds
-		(local.tee $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(call $log)
-		(local.tee $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-		(call $log)
-		(local.tee $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(call $log)
-		(local.tee $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-		(call $log)
+		(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.set $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
 						(i32.ge_s (local.get $xb0) (i32.const -640))
 						(i32.ge_s (local.get $xb1) (i32.const -640))
 				(i32.or)
@@ -384,15 +380,13 @@
 		(if	  ;;the start of the main
 		(then ;;if block
 			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
-			(local.tee $j (f64.convert_i32_s (local.get $yb0)))
-			(call $logf)
+			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block
 				(loop ;;loop through the x bounds of the projected triangle
 
 				;;loop logic (set i to 0, increment j, break if over)
-				(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
-				(local.tee $i (f64.convert_i32_s (local.get $xb0)))
-				(call $logf)
+				(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
+				(local.set $i (f64.convert_i32_s (local.get $xb0)))
 				(local.set $j (call $increment (local.get $j)))
 
 				(block
@@ -401,13 +395,12 @@
 						
 						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
-						(br_if 0 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-						(call $log (i32.trunc_f64_s (call $normx (local.get $i))))
-						(call $log (i32.trunc_f64_s (call $normy (local.get $j))))
+						;; (call $log (i32.trunc_f64_s (call $normx (local.get $i))))
+						;; (call $log (i32.trunc_f64_s (call $normy (local.get $j))))
 
-						(local.set $i (call $increment (local.get $i)))
-
+						(local.tee $i (call $increment (local.get $i)))
 							;; if the point is in the triangle v0-v1 edge
 											(local.get $i) ;;P.x
 											(local.get $xc0) ;;V0.x
@@ -570,12 +563,12 @@
 
 						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
-						(br 1)
+						(br 0)
 					)
 				)
 
 				;;loop logic (set i to 0, increment j, break if over)
-				(br 1)
+				(br 0)
 				)
 			)
 			;; (call $proj (local.get $x0) (local.get $z0))
@@ -588,9 +581,8 @@
 
 
 
-(func $test (export "test") (param $num i32) (param $rshift i32) (param $num2 i32)
-	
-	(call $pshade (i32.const 1) (i32.const 1) (i32.const 1))
+(func $test (export "test") (param $num i32) (param $num2 i32)
+
 )
 
 ) ;;module end
