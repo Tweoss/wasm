@@ -190,7 +190,7 @@
 )
 
 
-;;when passing in, pass triangle vertices in CLOCKWISE 
+;;when passing in, pass triangle vertices in COUNTERCLOCKWISE 
 ;;(with highest x (or y (or z))) (maybe)
 
 (func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32)
@@ -397,8 +397,8 @@
 						;; (call $log (local.get $xb0))
 						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-						(call $log (i32.trunc_f64_s (call $normx (local.get $i))))
-						(call $log (i32.trunc_f64_s (call $normy (local.get $j))))
+						(call $log (i32.trunc_f64_s (local.get $i)))
+						(call $log (i32.trunc_f64_s (local.get $j)))
 							;; if the point is in the triangle v0-v1 edge
 											(local.get $i) ;;P.x
 											(local.get $xc0) ;;V0.x
@@ -418,6 +418,7 @@
 								(local.tee $i01)
 								(f64.const 0)
 							(f64.gt)
+						(call $logf (local.get $i01));;debugging
 							(if		;;if the point is in
 							(then	;;the v0-v1 boundary
 						(call $log (i32.const 420));;debugging
@@ -577,12 +578,12 @@
 				(br 0)
 				)
 			)
-			(call $logf (call $normx (call $proj (local.get $x0) (local.get $y0))))
-			(call $logf (call $normy (call $proj (local.get $x0) (local.get $z0))))
-			(call $logf (call $normx (call $proj (local.get $x1) (local.get $y1))))
-			(call $logf (call $normy (call $proj (local.get $x1) (local.get $z1))))
-			(call $logf (call $normx (call $proj (local.get $x2) (local.get $y2))))
-			(call $logf (call $normy (call $proj (local.get $x2) (local.get $z2))))
+			(call $logf (call $proj (local.get $x0) (local.get $y0)))
+			(call $logf (call $proj (local.get $x0) (local.get $z0)))
+			(call $logf (call $proj (local.get $x1) (local.get $y1)))
+			(call $logf (call $proj (local.get $x1) (local.get $z1)))
+			(call $logf (call $proj (local.get $x2) (local.get $y2)))
+			(call $logf (call $proj (local.get $x2) (local.get $z2)))
 
 		);;the end of the main
 		);;if block
