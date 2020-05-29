@@ -397,10 +397,8 @@
 						;; (call $log (local.get $xb0))
 						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-						;; (call $log (i32.trunc_f64_s (call $normx (local.get $i))))
-						;; (call $log (i32.trunc_f64_s (call $normy (local.get $j))))
-
-						(local.tee $i (call $increment (local.get $i)))
+						(call $log (i32.trunc_f64_s (call $normx (local.get $i))))
+						(call $log (i32.trunc_f64_s (call $normy (local.get $j))))
 							;; if the point is in the triangle v0-v1 edge
 											(local.get $i) ;;P.x
 											(local.get $xc0) ;;V0.x
@@ -422,6 +420,7 @@
 							(f64.gt)
 							(if		;;if the point is in
 							(then	;;the v0-v1 boundary
+						(call $log (i32.const 420));;debugging
 												(local.get $i) ;;P.x
 												(local.get $xc1) ;;V0.x
 											(f64.sub)
@@ -462,6 +461,7 @@
 									(f64.gt)
 									(if		;;if the point is in
 									(then	;;the v2-v0 boundary
+						(call $log (i32.const 420));;debugging
 										(call $pshade
 											(i32.trunc_f64_s (call $normx (local.get $i)))
 											(i32.trunc_f64_s (call $normy (local.get $j)))
@@ -471,6 +471,7 @@
 									(else	;;if the point is not inside any boundary
 										(if (f64.eq (local.get $i01) (f64.const 0))
 										(then
+						(call $log (i32.const 420));;debugging
 											(if (i32.trunc_f64_s (local.get $e01))
 											(then
 												(if (f64.eq (local.get $i12) (f64.const 0))
@@ -484,6 +485,7 @@
 													)
 												)
 												(else
+						(call $log (i32.const 420));;debugging
 													(if (f64.eq (local.get $i20) (f64.const 0))
 													(then
 														(if (i32.trunc_f64_s (local.get $e20))
@@ -509,8 +511,10 @@
 										
 										)
 										(else
+						(call $log (i32.const 420));;debugging
 											(if (f64.eq (local.get $i12) (f64.const 0))
 											(then
+						(call $log (i32.const 420));;debugging
 												(if (i32.trunc_f64_s (local.get $e12))
 												(then
 													(if (f64.eq (local.get $i20) (f64.const 0))
@@ -537,6 +541,7 @@
 												)
 											)
 											(else
+						(call $log (i32.const 420));;debugging
 												(if (f64.eq (local.get $i20) (f64.const 0))
 												(then
 													(if (i32.trunc_f64_s (local.get $e20))
@@ -563,6 +568,7 @@
 
 						;;loop logic (end part) (increment, break if over)
 						;; (call $log (local.get $xb0))
+						(local.tee $i (call $increment (local.get $i)))
 						(br 0)
 					)
 				)
@@ -571,7 +577,12 @@
 				(br 0)
 				)
 			)
-			;; (call $proj (local.get $x0) (local.get $z0))
+			(call $logf (call $normx (call $proj (local.get $x0) (local.get $y0))))
+			(call $logf (call $normy (call $proj (local.get $x0) (local.get $z0))))
+			(call $logf (call $normx (call $proj (local.get $x1) (local.get $y1))))
+			(call $logf (call $normy (call $proj (local.get $x1) (local.get $z1))))
+			(call $logf (call $normx (call $proj (local.get $x2) (local.get $y2))))
+			(call $logf (call $normy (call $proj (local.get $x2) (local.get $z2))))
 
 		);;the end of the main
 		);;if block
