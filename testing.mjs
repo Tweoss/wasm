@@ -58,51 +58,52 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	// }
 	var i, j, k;
 	var color
-	// x = 1
-	color = parseInt("FFFFF0F0",16);
-	for (j = 21; j<321; j++){
-		for (k = 21; k<321; k++){
-			testfunc(21,j,k,color);
-		}
-	}
-	// y = 1
-	color = parseInt("FCBA03F0",16);
-	for(i = 21; i<321; i+= .01){
-		for (j = 21; j<321; j++){
-			testfunc(i,21,j,color);
-		}
-	}
-	// z = 1
-	color = parseInt("00FFFFF0",16);
-	for(i = 21; i<321; i+= .01){
-		for (j = 21; j<321; j++){
-			testfunc(i,j,21,color);
-		}
-	}
-	// x = 301
-	color = parseInt("FFFF00F0",16);
-	for (j = 21; j<321; j++){
-		for (k = 21; k<321; k++){
-			testfunc(321,j,k,color);
-		}
-	}
+	// // x = 1
+	// color = parseInt("FFFFF0F0",16);
+	// for (j = 21; j<321; j++){
+	// 	for (k = 21; k<321; k++){
+	// 		testfunc(21,j,k,color);
+	// 	}
+	// }
+	// // y = 1
+	// color = parseInt("FCBA03F0",16);
+	// for(i = 21; i<321; i+= .01){
+	// 	for (j = 21; j<321; j++){
+	// 		testfunc(i,21,j,color);
+	// 	}
+	// }
+	// // z = 1
+	// color = parseInt("00FFFFF0",16);
+	// for(i = 21; i<321; i+= .01){
+	// 	for (j = 21; j<321; j++){
+	// 		testfunc(i,j,21,color);
+	// 	}
+	// }
+	// // x = 301
+	// color = parseInt("FFFF00F0",16);
+	// for (j = 21; j<321; j++){
+	// 	for (k = 21; k<321; k++){
+	// 		testfunc(321,j,k,color);
+	// 	}
+	// }
 	
-	// y = 301
-	color = parseInt("F00FFFF0",16);
-	for(i = 21; i<321; i+= .01){
-		for (k = 21; k<321; k++){
-			testfunc(i,321,k,color);
-		}
-	}
-	// z = 301
-	color = parseInt("F0F0F0F0",16);
-	for(i = 21; i<321; i+= .01){
-		for (j = 21; j<321; j++){
-			testfunc(i,j,321,color);
-		}
-	}
+	// // y = 301
+	// color = parseInt("F00FFFF0",16);
+	// for(i = 21; i<321; i+= .01){
+	// 	for (k = 21; k<321; k++){
+	// 		testfunc(i,321,k,color);
+	// 	}
+	// }
+	// // z = 301
+	// color = parseInt("F0F0F0F0",16);
+	// for(i = 21; i<321; i+= .01){
+	// 	for (j = 21; j<321; j++){
+	// 		testfunc(i,j,321,color);
+	// 	}
+	// }
 	color = parseInt("FFFFF0F0",16);
-	// results.instance.exports.trishade(21,21,21,21,321,21,21,321,321,color);
+	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
+	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
 	
 	
 
