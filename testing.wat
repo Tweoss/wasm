@@ -513,7 +513,7 @@
 			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block
-				(loop ;;loop through the x bounds of the projected triangle
+			(loop ;;loop through the x bounds of the projected triangle
 
 				;;loop logic (set i to 0, increment j, break if over)
 				(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
@@ -521,101 +521,104 @@
 				(local.set $j (call $increment (local.get $j)))
 
 				(block
-					(loop ;;loop through the y bounds of the projected triangle
-						;;FOLD HERE if the point is in the triangle or on a valide edge or vertex	
-						
-						;;loop logic (end part) (increment, break if over)
-						;; (call $log (local.get $xb0))
-						(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+				(loop ;;loop through the y bounds of the projected triangle
+					;;FOLD HERE if the point is in the triangle or on a valide edge or vertex	
+					
+					;;loop logic (end part) (increment, break if over)
+					(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-						(call $log (i32.trunc_f64_s (local.get $i)))
-						(call $log (i32.trunc_f64_s (local.get $j)))
-							;; if the point is in the triangle v0-v1 edge
+					(call $log (i32.trunc_f64_s (local.get $i)))
+					(call $log (i32.trunc_f64_s (local.get $j)))
+						;; if the point is in the triangle v0-v1 edge
+										(local.get $i) ;;P.x
+										(local.get $xc0) ;;V0.x
+									(f64.sub)
+										(local.get $yc1) ;;V1.y
+										(local.get $yc0) ;;V0.y
+									(f64.sub)
+								(f64.mul)
+										(local.get $j) ;;P.y
+										(local.get $yc0) ;;V0.y 
+									(f64.sub)
+										(local.get $xc1) ;;V1.x
+										(local.get $xc0) ;;V0.x
+									(f64.sub)
+								(f64.mul)
+							(f64.sub)
+							(local.tee $i01)
+							(f64.const 0)
+						(f64.gt)
+						(if		;;if the point is in
+						(then	;;the v0-v1 boundary
 											(local.get $i) ;;P.x
-											(local.get $xc0) ;;V0.x
+											(local.get $xc1) ;;V0.x
 										(f64.sub)
-											(local.get $yc1) ;;V1.y
-											(local.get $yc0) ;;V0.y
+											(local.get $yc2) ;;V1.y
+											(local.get $yc1) ;;V0.y
 										(f64.sub)
 									(f64.mul)
 											(local.get $j) ;;P.y
-											(local.get $yc0) ;;V0.y 
+											(local.get $yc1) ;;V0.y 
 										(f64.sub)
-											(local.get $xc1) ;;V1.x
-											(local.get $xc0) ;;V0.x
+											(local.get $xc2) ;;V1.x
+											(local.get $xc1) ;;V0.x
 										(f64.sub)
 									(f64.mul)
 								(f64.sub)
-								(local.tee $i01)
+								(local.tee $e12)
 								(f64.const 0)
 							(f64.gt)
-						(call $logf (local.get $i01));;debugging
 							(if		;;if the point is in
-							(then	;;the v0-v1 boundary
-						(call $log (i32.const 420));;debugging
+							(then	;;the v1-v2 boundary
 												(local.get $i) ;;P.x
-												(local.get $xc1) ;;V0.x
+												(local.get $xc2) ;;V2.x
 											(f64.sub)
-												(local.get $yc2) ;;V1.y
-												(local.get $yc1) ;;V0.y
+												(local.get $yc0) ;;V0.y
+												(local.get $yc2) ;;V2.y
 											(f64.sub)
 										(f64.mul)
 												(local.get $j) ;;P.y
-												(local.get $yc1) ;;V0.y 
+												(local.get $yc2) ;;V2.y 
 											(f64.sub)
-												(local.get $xc2) ;;V1.x
-												(local.get $xc1) ;;V0.x
+												(local.get $xc0) ;;V0.x
+												(local.get $xc2) ;;V2.x
 											(f64.sub)
 										(f64.mul)
 									(f64.sub)
-									(local.tee $e12)
+									(local.tee $e20)
 									(f64.const 0)
 								(f64.gt)
 								(if		;;if the point is in
-								(then	;;the v1-v2 boundary
-													(local.get $i) ;;P.x
-													(local.get $xc2) ;;V2.x
-												(f64.sub)
-													(local.get $yc0) ;;V0.y
-													(local.get $yc2) ;;V2.y
-												(f64.sub)
-											(f64.mul)
-													(local.get $j) ;;P.y
-													(local.get $yc2) ;;V2.y 
-												(f64.sub)
-													(local.get $xc0) ;;V0.x
-													(local.get $xc2) ;;V2.x
-												(f64.sub)
-											(f64.mul)
-										(f64.sub)
-										(local.tee $e20)
-										(f64.const 0)
-									(f64.gt)
-									(if		;;if the point is in
-									(then	;;the v2-v0 boundary
-						(call $log (i32.const 421));;debugging
-						(call $logf (local.get $i));;debugging
-						(call $logf (local.get $j));;debugging
-						
-										(call $pshade
+								(then	;;the v2-v0 boundary			
+									(call $pshade
+										(i32.trunc_f64_s (call $normx (local.get $i)))
+										(i32.trunc_f64_s (call $normy (local.get $j)))
 											(i32.trunc_f64_s (call $normx (local.get $i)))
+											(call $log)
 											(i32.trunc_f64_s (call $normy (local.get $j)))
-												(i32.trunc_f64_s (call $normx (local.get $i)))
-												(call $log)
-												(i32.trunc_f64_s (call $normy (local.get $j)))
-												(call $log)
-											(local.get $color)
-										)
+											(call $log)
+										(local.get $color)
 									)
-									(else	;;if the point is not inside any boundary
-										(if (f64.eq (local.get $i01) (f64.const 0))
+								)
+								(else	;;if the point is not inside any boundary
+									(if (f64.eq (local.get $i01) (f64.const 0))
+									(then
+										(if (i32.trunc_f64_s (local.get $e01))
 										(then
-						(call $log (i32.const 420));;debugging
-											(if (i32.trunc_f64_s (local.get $e01))
+											(if (f64.eq (local.get $i12) (f64.const 0))
 											(then
-												(if (f64.eq (local.get $i12) (f64.const 0))
+												(if (i32.trunc_f64_s (local.get $e12))
+													(call $pshade
+														(i32.trunc_f64_s (call $normx (local.get $i)))
+														(i32.trunc_f64_s (call $normy (local.get $j)))
+														(local.get $color)
+													)
+												)
+											)
+											(else
+												(if (f64.eq (local.get $i20) (f64.const 0))
 												(then
-													(if (i32.trunc_f64_s (local.get $e12))
+													(if (i32.trunc_f64_s (local.get $e20))
 														(call $pshade
 															(i32.trunc_f64_s (call $normx (local.get $i)))
 															(i32.trunc_f64_s (call $normy (local.get $j)))
@@ -624,63 +627,24 @@
 													)
 												)
 												(else
-						(call $log (i32.const 420));;debugging
-													(if (f64.eq (local.get $i20) (f64.const 0))
-													(then
-														(if (i32.trunc_f64_s (local.get $e20))
-															(call $pshade
-																(i32.trunc_f64_s (call $normx (local.get $i)))
-																(i32.trunc_f64_s (call $normy (local.get $j)))
-																(local.get $color)
-															)
-														)
-													)
-													(else
-														(call $pshade
-															(i32.trunc_f64_s (call $normx (local.get $i)))
-															(i32.trunc_f64_s (call $normy (local.get $j)))
-															(local.get $color)
-														)
-													)
+													(call $pshade
+														(i32.trunc_f64_s (call $normx (local.get $i)))
+														(i32.trunc_f64_s (call $normy (local.get $j)))
+														(local.get $color)
 													)
 												)
 												)
 											)
 											)
-										
 										)
-										(else
-						(call $log (i32.const 420));;debugging
-											(if (f64.eq (local.get $i12) (f64.const 0))
+										)
+									
+									)
+									(else
+										(if (f64.eq (local.get $i12) (f64.const 0))
+										(then
+											(if (i32.trunc_f64_s (local.get $e12))
 											(then
-						(call $log (i32.const 420));;debugging
-												(if (i32.trunc_f64_s (local.get $e12))
-												(then
-													(if (f64.eq (local.get $i20) (f64.const 0))
-													(then
-														(if (i32.trunc_f64_s (local.get $e20))
-														(then
-															(call $pshade
-																(i32.trunc_f64_s (call $normx (local.get $i)))
-																(i32.trunc_f64_s (call $normy (local.get $j)))
-																(local.get $color)
-															)
-														)
-														)
-													)
-													(else
-														(call $pshade
-															(i32.trunc_f64_s (call $normx (local.get $i)))
-															(i32.trunc_f64_s (call $normy (local.get $j)))
-															(local.get $color)
-														)
-													)
-													)
-												)
-												)
-											)
-											(else
-						(call $log (i32.const 420));;debugging
 												(if (f64.eq (local.get $i20) (f64.const 0))
 												(then
 													(if (i32.trunc_f64_s (local.get $e20))
@@ -693,6 +657,28 @@
 													)
 													)
 												)
+												(else
+													(call $pshade
+														(i32.trunc_f64_s (call $normx (local.get $i)))
+														(i32.trunc_f64_s (call $normy (local.get $j)))
+														(local.get $color)
+													)
+												)
+												)
+											)
+											)
+										)
+										(else
+											(if (f64.eq (local.get $i20) (f64.const 0))
+											(then
+												(if (i32.trunc_f64_s (local.get $e20))
+												(then
+													(call $pshade
+														(i32.trunc_f64_s (call $normx (local.get $i)))
+														(i32.trunc_f64_s (call $normy (local.get $j)))
+														(local.get $color)
+													)
+												)
 												)
 											)
 											)
@@ -704,17 +690,19 @@
 								)
 							)
 							)
+						)
+						)
 
-						;;loop logic (end part) (increment, break if over)
-						;; (call $log (local.get $xb0))
-						(local.tee $i (call $increment (local.get $i)))
-						(br 0)
-					)
+					;;loop logic (end part) (increment, break if over)
+					;; (call $log (local.get $xb0))
+					(local.tee $i (call $increment (local.get $i)))
+					(br 0)
+				)
 				)
 
 				;;loop logic (set i to 0, increment j, break if over)
 				(br 0)
-				)
+			)
 			)
 			(call $logf (call $proj (local.get $x0) (local.get $y0)))
 			(call $logf (call $proj (local.get $x0) (local.get $z0)))
