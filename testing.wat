@@ -103,7 +103,7 @@
 	(local.get $y)
 	(f64.sub)
 )
-	;; ;;and the integer version
+;; and the integer version
 	;; (func $normix (param $x i32) (result i32)
 	;; 	(i32.const 640)
 	;; 	(local.get $x)
@@ -144,11 +144,11 @@
 
 	(if
 		(then
-			(local.get $y)
 			(local.get $x)
+			(local.get $y)
 			(call $mem)
-				(local.get $y)
 				(local.get $x)
+				(local.get $y)
 				(call $mem)
 			(call $log)
 			(local.get $color)
@@ -593,10 +593,17 @@
 									(f64.gt)
 									(if		;;if the point is in
 									(then	;;the v2-v0 boundary
-						(call $log (i32.const 420));;debugging
+						(call $log (i32.const 421));;debugging
+						(call $logf (local.get $i));;debugging
+						(call $logf (local.get $j));;debugging
+						
 										(call $pshade
 											(i32.trunc_f64_s (call $normx (local.get $i)))
 											(i32.trunc_f64_s (call $normy (local.get $j)))
+												(i32.trunc_f64_s (call $normx (local.get $i)))
+												(call $log)
+												(i32.trunc_f64_s (call $normy (local.get $j)))
+												(call $log)
 											(local.get $color)
 										)
 									)
