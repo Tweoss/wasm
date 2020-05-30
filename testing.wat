@@ -231,54 +231,172 @@
 		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 	;;END	PROJECTION EVALUATION
 
-	;;START	EDGE TRUTH EVALUATION
+	;;START	Clockwise EDGE TRUTH EVALUATION
 
-			;; 	(local.get $yc1) ;;next vertex
-			;; 	(local.get $yc0) ;;prev vertex
-			;; (f64.gt)
-			;; ;;left
-			;; 		(local.get $yc2) ;;next
-			;; 		(local.get $yc1) ;;prev
-			;; 	(f64.eq)
-			;; 		(local.get $xc2) ;;next
-			;; 		(local.get $xc1) ;;prev
-			;; 	(f64.gt)
-			;; (i32.and)
-			;; ;;top
-			;; (local.set $e11 (f64.const 1))
+		;; 	;; 	(local.get $yc1) ;;next vertex
+		;; 	;; 	(local.get $yc0) ;;prev vertex
+		;; 	;; (f64.gt)
+		;; 	;; ;;left
+		;; 	;; 		(local.get $yc2) ;;next
+		;; 	;; 		(local.get $yc1) ;;prev
+		;; 	;; 	(f64.eq)
+		;; 	;; 		(local.get $xc2) ;;next
+		;; 	;; 		(local.get $xc1) ;;prev
+		;; 	;; 	(f64.gt)
+		;; 	;; (i32.and)
+		;; 	;; ;;top
+		;; 	;; (local.set $e11 (f64.const 1))
 
-			(local.get $yc1) 
-			(local.get $yc0)
+		;; 	(local.get $yc1) 
+		;; 	(local.get $yc0)
+		;; (f64.gt)
+		;; (if ;;e01 is l
+		;; (then
+		;; 	(local.set $e01 (f64.const 1))
+		;; 		(local.get $yc2) 
+		;; 		(local.get $yc1)
+		;; 	(f64.gt)
+		;; 	(if ;;e12 is l
+		;; 	(then
+		;; 		(local.set $e12 (f64.const 1))
+		;; 		(local.set $e20 (f64.const 0))
+		;; 	)
+		;; 	(else
+		;; 				(local.get $yc2) ;;next
+		;; 				(local.get $yc1) ;;prev
+		;; 			(f64.eq)
+		;; 				(local.get $xc2) ;;next
+		;; 				(local.get $xc1) ;;prev
+		;; 			(f64.gt)
+		;; 		(i32.and)
+		;; 		(if ;;e12 is t
+		;; 		(then
+		;; 			(local.set $e12 (f64.const 1))
+		;; 			(local.set $e20 (f64.const 0))
+		;; 		)
+		;; 		(else ;;e12 is n
+		;; 			(local.set $e12 (f64.const 0))
+		;; 				(local.get $yc0) 
+		;; 				(local.get $yc2)
+		;; 			(f64.gt)
+		;; 			(if
+		;; 			(then
+		;; 				(local.set $e20 (f64.const 1))
+		;; 			)
+		;; 			(else
+		;; 				(local.set $e20 (f64.const 0))
+		;; 			)
+		;; 			)
+		;; 		)
+		;; 		)
+		;; 	)
+		;; 	)
+		;; )
+		;; (else
+		;; 			(local.get $yc1)
+		;; 			(local.get $yc0)
+		;; 		(f64.eq)
+		;; 			(local.get $xc1)
+		;; 			(local.get $xc0)
+		;; 		(f64.gt)
+		;; 	(i32.and)
+		;; 	(if ;;e01 is t
+		;; 	(then
+		;; 		(local.set $e01 (f64.const 1))
+		;; 		(local.set $e12 (f64.const 0))
+		;; 		(local.set $e20 (f64.const 1))
+		;; 	)
+		;; 	(else ;;e01 is n
+		;; 			(local.get $yc2)
+		;; 			(local.get $yc1)
+		;; 		(f64.gt);;)
+		;; 		(if ;;e12 is l
+		;; 		(then
+		;; 			(local.set $e12 (f64.const 1))
+		;; 				(local.get $yc0)
+		;; 				(local.get $yc2)
+		;; 			(f64.gt)
+		;; 			(if ;;e20 is l
+		;; 			(then
+		;; 				(local.set $e20 (f64.const 1))
+		;; 			)
+		;; 			(else
+		;; 						(local.get $yc0)
+		;; 						(local.get $yc2)
+		;; 					(f64.eq)
+		;; 						(local.get $xc0)
+		;; 						(local.get $xc2)
+		;; 					(f64.gt)
+		;; 				(i32.and)
+		;; 				(if ;;e20 is t
+		;; 				(then
+		;; 					(local.set $e20 (f64.const 1))
+		;; 				)
+		;; 				(else ;;e20 is n
+		;; 					(local.set $e20 (f64.const 0))
+		;; 				)
+		;; 				)
+		;; 			)
+		;; 			)
+		;; 		)
+		;; 		(else ;;e12 is n
+		;; 			(local.set $e12 (f64.const 0))
+		;; 			(local.set $e20 (f64.const 1))
+		;; 		)
+					
+		;; 		)
+		;; 	)
+		;; 	)
+		;; )
+		;; )
+
+	;;END	Clockwise EDGE TRUTH EVALUATION
+
+	;;START Counterclockwise EDGE TRUTH EVALUATION
+		;; 	(local.get $yc1) ;;next vertex
+		;; 	(local.get $yc0) ;;prev vertex
+		;; (f64.gt)
+		;; ;;left
+		;; 		(local.get $yc2) ;;next
+		;; 		(local.get $yc1) ;;prev
+		;; 	(f64.eq)
+		;; 		(local.get $xc2) ;;next
+		;; 		(local.get $xc1) ;;prev
+		;; 	(f64.gt)
+		;; (i32.and)
+		;; ;;top
+
+			(local.get $yc1) ;;next vertex
+			(local.get $yc0) ;;prev vertex
 		(f64.gt)
-		(if ;;e01 is l
+		(if
 		(then
 			(local.set $e01 (f64.const 1))
-				(local.get $yc2) 
-				(local.get $yc1)
+				(local.get $yc2) ;;next vertex
+				(local.get $yc1) ;;prev vertex
 			(f64.gt)
-			(if ;;e12 is l
+			(if
 			(then
 				(local.set $e12 (f64.const 1))
 				(local.set $e20 (f64.const 0))
 			)
 			(else
-						(local.get $yc2) ;;next
-						(local.get $yc1) ;;prev
-					(f64.eq)
-						(local.get $xc2) ;;next
-						(local.get $xc1) ;;prev
-					(f64.gt)
-				(i32.and)
-				(if ;;e12 is t
+				(local.set $e12 (f64.const 0))
+					(local.get $yc1) ;;next vertex
+					(local.get $yc0) ;;prev vertex
+				(f64.gt)
+				(if
 				(then
-					(local.set $e12 (f64.const 1))
-					(local.set $e20 (f64.const 0))
+					(local.set $e20 (f64.const 1))
 				)
-				(else ;;e12 is n
-					(local.set $e12 (f64.const 0))
-						(local.get $yc0) 
-						(local.get $yc2)
-					(f64.gt)
+				(else
+							(local.get $yc0) ;;next
+							(local.get $yc2) ;;prev
+						(f64.eq)
+							(local.get $xc0) ;;next
+							(local.get $xc2) ;;prev
+						(f64.gt)
+					(i32.and)
 					(if
 					(then
 						(local.set $e20 (f64.const 1))
@@ -293,64 +411,77 @@
 			)
 		)
 		(else
-					(local.get $yc1)
-					(local.get $yc0)
+					(local.get $yc1) ;;next
+					(local.get $yc0) ;;prev
 				(f64.eq)
-					(local.get $xc1)
-					(local.get $xc0)
+					(local.get $xc1) ;;next
+					(local.get $xc0) ;;prev
 				(f64.gt)
 			(i32.and)
-			(if ;;e01 is t
+			(if
 			(then
 				(local.set $e01 (f64.const 1))
-				(local.set $e12 (f64.const 0))
-				(local.set $e20 (f64.const 1))
+				(local.set $e12 (f64.const 1))
+				(local.set $e20 (f64.const 0))
 			)
-			(else ;;e01 is n
-					(local.get $yc2)
-					(local.get $yc1)
-				(f64.gt);;)
-				(if ;;e12 is l
+			(else
+				(local.set $e01 (f64.const 0))
+						(local.get $yc2) ;;next
+						(local.get $yc1) ;;prev
+					(f64.eq)
+						(local.get $xc2) ;;next
+						(local.get $xc1) ;;prev
+					(f64.gt)
+				(i32.and)
+				(if
 				(then
 					(local.set $e12 (f64.const 1))
-						(local.get $yc0)
-						(local.get $yc2)
-					(f64.gt)
-					(if ;;e20 is l
+							(local.get $yc0) ;;next
+							(local.get $yc2) ;;prev
+						(f64.eq)
+							(local.get $xc0) ;;next
+							(local.get $xc2) ;;prev
+						(f64.gt)
+					(i32.and)
+					(if
 					(then
 						(local.set $e20 (f64.const 1))
 					)
 					(else
-								(local.get $yc0)
-								(local.get $yc2)
-							(f64.eq)
-								(local.get $xc0)
-								(local.get $xc2)
-							(f64.gt)
-						(i32.and)
-						(if ;;e20 is t
-						(then
-							(local.set $e20 (f64.const 1))
-						)
-						(else ;;e20 is n
-							(local.set $e20 (f64.const 0))
-						)
-						)
+						(local.set $e20 (f64.const 0))
 					)
 					)
 				)
-				(else ;;e12 is n
-					(local.set $e12 (f64.const 0))
-					(local.set $e20 (f64.const 1))
+				(else
+							(local.get $yc2) ;;next
+							(local.get $yc1) ;;prev
+						(f64.eq)
+							(local.get $xc2) ;;next
+							(local.get $xc1) ;;prev
+						(f64.gt)
+					(i32.and)
+					(if
+					(then
+						(local.set $e12 (f64.const 1))
+						(local.set $e20 (f64.const 1))
+					)
+					(else
+						(local.set $e12 (f64.const 0))
+						(local.set $e20 (f64.const 1))
+					)
+					)
 				)
-					
 				)
+
 			)
 			)
 		)
 		)
 
-	;;END	EDGE TRUTH EVALUATION
+
+
+	;;END	Counterclockwise EDGE TRUTH EVALUATION
+
 
 	;;START	MAIN IF BLOCK (IF SOME OF TRI IS IN CANVAS BOUNDS)
 	;;if at least some of the triangle is inside the canvas bounds
