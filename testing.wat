@@ -144,13 +144,18 @@
 
 	(if
 		(then
-			(local.get $x)
-			(local.get $y)
-			(call $mem)
+				;; (i32.const 640)
 				(local.get $x)
+			;; (i32.sub)
+			;; 	(i32.const 360)
 				(local.get $y)
-				(call $mem)
-			(call $log)
+			;; (i32.sub)
+			(call $mem)
+				;; (local.get $x)
+				;; (local.get $y)
+				;; (call $mem)
+			;; 	(local.get $color)
+			;; (call $log)
 			(local.get $color)
 
 			(i32.store)
@@ -527,8 +532,8 @@
 					;;loop logic (end part) (increment, break if over)
 					(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-					(call $log (i32.trunc_f64_s (local.get $i)))
-					(call $log (i32.trunc_f64_s (local.get $j)))
+					;; (call $log (i32.trunc_f64_s (local.get $i)))
+					;; (call $log (i32.trunc_f64_s (local.get $j)))
 						;; if the point is in the triangle v0-v1 edge
 										(local.get $i) ;;P.x
 										(local.get $xc0) ;;V0.x
@@ -591,12 +596,10 @@
 								(if		;;if the point is in
 								(then	;;the v2-v0 boundary			
 									(call $pshade
-										(i32.trunc_f64_s (call $normx (local.get $i)))
-										(i32.trunc_f64_s (call $normy (local.get $j)))
-											(i32.trunc_f64_s (call $normx (local.get $i)))
-											(call $log)
-											(i32.trunc_f64_s (call $normy (local.get $j)))
-											(call $log)
+										;; (i32.trunc_f64_s (call $normx (local.get $i)))
+										(i32.trunc_f64_s (local.get $i))
+										;; (i32.trunc_f64_s (call $normy (local.get $j)))
+										(i32.trunc_f64_s (local.get $j))
 										(local.get $color)
 									)
 								)
@@ -609,8 +612,10 @@
 											(then
 												(if (i32.trunc_f64_s (local.get $e12))
 													(call $pshade
-														(i32.trunc_f64_s (call $normx (local.get $i)))
-														(i32.trunc_f64_s (call $normy (local.get $j)))
+														;; (i32.trunc_f64_s (call $normx (local.get $i)))
+														;; (i32.trunc_f64_s (call $normy (local.get $j)))
+														(i32.trunc_f64_s (local.get $i))
+														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
 													)
 												)
@@ -620,16 +625,20 @@
 												(then
 													(if (i32.trunc_f64_s (local.get $e20))
 														(call $pshade
-															(i32.trunc_f64_s (call $normx (local.get $i)))
-															(i32.trunc_f64_s (call $normy (local.get $j)))
+															;; (i32.trunc_f64_s (call $normx (local.get $i)))
+															;; (i32.trunc_f64_s (call $normy (local.get $j)))
+															(i32.trunc_f64_s (local.get $i))
+															(i32.trunc_f64_s (local.get $j))
 															(local.get $color)
 														)
 													)
 												)
 												(else
 													(call $pshade
-														(i32.trunc_f64_s (call $normx (local.get $i)))
-														(i32.trunc_f64_s (call $normy (local.get $j)))
+														;; (i32.trunc_f64_s (call $normx (local.get $i)))
+														;; (i32.trunc_f64_s (call $normy (local.get $j)))
+														(i32.trunc_f64_s (local.get $i))
+														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
 													)
 												)
@@ -650,8 +659,10 @@
 													(if (i32.trunc_f64_s (local.get $e20))
 													(then
 														(call $pshade
-															(i32.trunc_f64_s (call $normx (local.get $i)))
-															(i32.trunc_f64_s (call $normy (local.get $j)))
+															;; (i32.trunc_f64_s (call $normx (local.get $i)))
+															;; (i32.trunc_f64_s (call $normy (local.get $j)))
+															(i32.trunc_f64_s (local.get $i))
+															(i32.trunc_f64_s (local.get $j))
 															(local.get $color)
 														)
 													)
@@ -659,8 +670,10 @@
 												)
 												(else
 													(call $pshade
-														(i32.trunc_f64_s (call $normx (local.get $i)))
-														(i32.trunc_f64_s (call $normy (local.get $j)))
+														;; (i32.trunc_f64_s (call $normx (local.get $i)))
+														;; (i32.trunc_f64_s (call $normy (local.get $j)))
+														(i32.trunc_f64_s (local.get $i))
+														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
 													)
 												)
@@ -704,12 +717,12 @@
 				(br 0)
 			)
 			)
-			(call $logf (call $proj (local.get $x0) (local.get $y0)))
-			(call $logf (call $proj (local.get $x0) (local.get $z0)))
-			(call $logf (call $proj (local.get $x1) (local.get $y1)))
-			(call $logf (call $proj (local.get $x1) (local.get $z1)))
-			(call $logf (call $proj (local.get $x2) (local.get $y2)))
-			(call $logf (call $proj (local.get $x2) (local.get $z2)))
+			;; (call $logf (call $proj (local.get $x0) (local.get $y0)))
+			;; (call $logf (call $proj (local.get $x0) (local.get $z0)))
+			;; (call $logf (call $proj (local.get $x1) (local.get $y1)))
+			;; (call $logf (call $proj (local.get $x1) (local.get $z1)))
+			;; (call $logf (call $proj (local.get $x2) (local.get $y2)))
+			;; (call $logf (call $proj (local.get $x2) (local.get $z2)))
 
 		);;the end of the main
 		);;if block
