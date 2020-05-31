@@ -198,7 +198,7 @@
 ;;when passing in, pass triangle vertices in COUNTERCLOCKWISE 
 ;;(with highest x (or y (or z))) (maybe)
 
-(func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32)
+(func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32) (param )
 
 	;;START	LOCAL DECLARATION
 		(local $xr0 i32);;	canvas coords
@@ -217,12 +217,12 @@
 		(local $yb0 i32);; (signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
-		(local $e01 f64);;	validity t/f of edges (top left rule)
-		(local $e12 f64);;	(binary)
-		(local $e20 f64)
-		(local $i01 f64);;	t/f the point is on the 
-		(local $i12 f64);;	edge
-		(local $i20 f64)
+		(local $e01 i32);;	validity t/f of edges (top left rule)
+		(local $e12 i32);;	(binary)
+		(local $e20 i32)
+		(local $i01 i32);;	t/f the point is on the 
+		(local $i12 i32);;	edge
+		(local $i20 i32)
 		(local $i	f64);;	arbitrary indeces
 		(local $j	f64);;	(signed)
 	;;END	LOCAL DECLARATION
@@ -257,14 +257,14 @@
 		;; (f64.gt)
 		;; (if ;;e01 is l
 		;; (then
-		;; 	(local.set $e01 (f64.const 1))
+		;; 	(local.set $e01 (i32.const 1))
 		;; 		(local.get $yc2) 
 		;; 		(local.get $yc1)
 		;; 	(f64.gt)
 		;; 	(if ;;e12 is l
 		;; 	(then
-		;; 		(local.set $e12 (f64.const 1))
-		;; 		(local.set $e20 (f64.const 0))
+		;; 		(local.set $e12 (i32.const 1))
+		;; 		(local.set $e20 (i32.const 0))
 		;; 	)
 		;; 	(else
 		;; 				(local.get $yc2) ;;next
@@ -276,20 +276,20 @@
 		;; 		(i32.and)
 		;; 		(if ;;e12 is t
 		;; 		(then
-		;; 			(local.set $e12 (f64.const 1))
-		;; 			(local.set $e20 (f64.const 0))
+		;; 			(local.set $e12 (i32.const 1))
+		;; 			(local.set $e20 (i32.const 0))
 		;; 		)
 		;; 		(else ;;e12 is n
-		;; 			(local.set $e12 (f64.const 0))
+		;; 			(local.set $e12 (i32.const 0))
 		;; 				(local.get $yc0) 
 		;; 				(local.get $yc2)
 		;; 			(f64.gt)
 		;; 			(if
 		;; 			(then
-		;; 				(local.set $e20 (f64.const 1))
+		;; 				(local.set $e20 (i32.const 1))
 		;; 			)
 		;; 			(else
-		;; 				(local.set $e20 (f64.const 0))
+		;; 				(local.set $e20 (i32.const 0))
 		;; 			)
 		;; 			)
 		;; 		)
@@ -307,9 +307,9 @@
 		;; 	(i32.and)
 		;; 	(if ;;e01 is t
 		;; 	(then
-		;; 		(local.set $e01 (f64.const 1))
-		;; 		(local.set $e12 (f64.const 0))
-		;; 		(local.set $e20 (f64.const 1))
+		;; 		(local.set $e01 (i32.const 1))
+		;; 		(local.set $e12 (i32.const 0))
+		;; 		(local.set $e20 (i32.const 1))
 		;; 	)
 		;; 	(else ;;e01 is n
 		;; 			(local.get $yc2)
@@ -317,13 +317,13 @@
 		;; 		(f64.gt);;)
 		;; 		(if ;;e12 is l
 		;; 		(then
-		;; 			(local.set $e12 (f64.const 1))
+		;; 			(local.set $e12 (i32.const 1))
 		;; 				(local.get $yc0)
 		;; 				(local.get $yc2)
 		;; 			(f64.gt)
 		;; 			(if ;;e20 is l
 		;; 			(then
-		;; 				(local.set $e20 (f64.const 1))
+		;; 				(local.set $e20 (i32.const 1))
 		;; 			)
 		;; 			(else
 		;; 						(local.get $yc0)
@@ -335,18 +335,18 @@
 		;; 				(i32.and)
 		;; 				(if ;;e20 is t
 		;; 				(then
-		;; 					(local.set $e20 (f64.const 1))
+		;; 					(local.set $e20 (i32.const 1))
 		;; 				)
 		;; 				(else ;;e20 is n
-		;; 					(local.set $e20 (f64.const 0))
+		;; 					(local.set $e20 (i32.const 0))
 		;; 				)
 		;; 				)
 		;; 			)
 		;; 			)
 		;; 		)
 		;; 		(else ;;e12 is n
-		;; 			(local.set $e12 (f64.const 0))
-		;; 			(local.set $e20 (f64.const 1))
+		;; 			(local.set $e12 (i32.const 0))
+		;; 			(local.set $e20 (i32.const 1))
 		;; 		)
 					
 		;; 		)
@@ -376,23 +376,23 @@
 		(f64.gt)
 		(if
 		(then
-			(local.set $e01 (f64.const 1))
+			(local.set $e01 (i32.const 1))
 				(local.get $yc2) ;;next vertex
 				(local.get $yc1) ;;prev vertex
 			(f64.gt)
 			(if
 			(then
-				(local.set $e12 (f64.const 1))
-				(local.set $e20 (f64.const 0))
+				(local.set $e12 (i32.const 1))
+				(local.set $e20 (i32.const 0))
 			)
 			(else
-				(local.set $e12 (f64.const 0))
+				(local.set $e12 (i32.const 0))
 					(local.get $yc1) ;;next vertex
 					(local.get $yc0) ;;prev vertex
 				(f64.gt)
 				(if
 				(then
-					(local.set $e20 (f64.const 1))
+					(local.set $e20 (i32.const 1))
 				)
 				(else
 							(local.get $yc0) ;;next
@@ -404,10 +404,10 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e20 (f64.const 1))
+						(local.set $e20 (i32.const 1))
 					)
 					(else
-						(local.set $e20 (f64.const 0))
+						(local.set $e20 (i32.const 0))
 					)
 					)
 				)
@@ -425,12 +425,12 @@
 			(i32.and)
 			(if
 			(then
-				(local.set $e01 (f64.const 1))
-				(local.set $e12 (f64.const 1))
-				(local.set $e20 (f64.const 0))
+				(local.set $e01 (i32.const 1))
+				(local.set $e12 (i32.const 1))
+				(local.set $e20 (i32.const 0))
 			)
 			(else
-				(local.set $e01 (f64.const 0))
+				(local.set $e01 (i32.const 0))
 						(local.get $yc2) ;;next
 						(local.get $yc1) ;;prev
 					(f64.eq)
@@ -440,7 +440,7 @@
 				(i32.and)
 				(if
 				(then
-					(local.set $e12 (f64.const 1))
+					(local.set $e12 (i32.const 1))
 							(local.get $yc0) ;;next
 							(local.get $yc2) ;;prev
 						(f64.eq)
@@ -450,10 +450,10 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e20 (f64.const 1))
+						(local.set $e20 (i32.const 1))
 					)
 					(else
-						(local.set $e20 (f64.const 0))
+						(local.set $e20 (i32.const 0))
 					)
 					)
 				)
@@ -467,12 +467,12 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e12 (f64.const 1))
-						(local.set $e20 (f64.const 1))
+						(local.set $e12 (i32.const 1))
+						(local.set $e20 (i32.const 1))
 					)
 					(else
-						(local.set $e12 (f64.const 0))
-						(local.set $e20 (f64.const 1))
+						(local.set $e12 (i32.const 0))
+						(local.set $e20 (i32.const 1))
 					)
 					)
 				)
@@ -550,9 +550,10 @@
 									(f64.sub)
 								(f64.mul)
 							(f64.sub)
+							(i32.trunc_f64_u)
 							(local.tee $i01)
-							(f64.const 0)
-						(f64.gt)
+							(i32.const 0)
+						(i32.gt_s)
 						(if		;;if the point is in
 						(then	;;the v0-v1 boundary
 											(local.get $i) ;;P.x
@@ -570,9 +571,10 @@
 										(f64.sub)
 									(f64.mul)
 								(f64.sub)
+								(i32.trunc_f64_u)
 								(local.tee $e12)
-								(f64.const 0)
-							(f64.gt)
+								(i32.const 0)
+							(i32.gt_s)
 							(if		;;if the point is in
 							(then	;;the v1-v2 boundary
 												(local.get $i) ;;P.x
@@ -590,9 +592,10 @@
 											(f64.sub)
 										(f64.mul)
 									(f64.sub)
+									(i32.trunc_f64_u)
 									(local.tee $e20)
-									(f64.const 0)
-								(f64.gt)
+									(i32.const 0)
+								(i32.gt_s)
 								(if		;;if the point is in
 								(then	;;the v2-v0 boundary			
 									(call $pshade
@@ -604,13 +607,13 @@
 									)
 								)
 								(else	;;if the point is not inside any boundary
-									(if (f64.eq (local.get $i01) (f64.const 0))
+									(if (i32.eqz (local.get $i01))
 									(then
-										(if (i32.trunc_f64_s (local.get $e01))
+										(if (local.get $e01)
 										(then
-											(if (f64.eq (local.get $i12) (f64.const 0))
+											(if (i32.eqz (local.get $i12))
 											(then
-												(if (i32.trunc_f64_s (local.get $e12))
+												(if (local.get $e12)
 													(call $pshade
 														;; (i32.trunc_f64_s (call $normx (local.get $i)))
 														;; (i32.trunc_f64_s (call $normy (local.get $j)))
@@ -621,9 +624,9 @@
 												)
 											)
 											(else
-												(if (f64.eq (local.get $i20) (f64.const 0))
+												(if (i32.eqz (local.get $i20))
 												(then
-													(if (i32.trunc_f64_s (local.get $e20))
+													(if (local.get $e20)
 														(call $pshade
 															;; (i32.trunc_f64_s (call $normx (local.get $i)))
 															;; (i32.trunc_f64_s (call $normy (local.get $j)))
@@ -650,13 +653,13 @@
 									
 									)
 									(else
-										(if (f64.eq (local.get $i12) (f64.const 0))
+										(if (i32.eqz (local.get $i12))
 										(then
-											(if (i32.trunc_f64_s (local.get $e12))
+											(if (local.get $e12)
 											(then
-												(if (f64.eq (local.get $i20) (f64.const 0))
+												(if (i32.eqz (local.get $i20))
 												(then
-													(if (i32.trunc_f64_s (local.get $e20))
+													(if (local.get $e20)
 													(then
 														(call $pshade
 															;; (i32.trunc_f64_s (call $normx (local.get $i)))
@@ -682,9 +685,9 @@
 											)
 										)
 										(else
-											(if (f64.eq (local.get $i20) (f64.const 0))
+											(if (i32.eqz (local.get $i20))
 											(then
-												(if (i32.trunc_f64_s (local.get $e20))
+												(if (local.get $e20)
 												(then
 													(call $pshade
 														(i32.trunc_f64_s (call $normx (local.get $i)))
