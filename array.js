@@ -19,7 +19,7 @@ var memory = new WebAssembly.Memory({ initial : 1 });
         }
       };
 
-WebAssembly.instantiateStreaming(fetch('array.wasm'),importObject)
+WebAssembly.instantiateStreaming(fetch('array.wasm'), importObject)
 .then(results => {
   results.instance.exports.main;
   // consoleLogString(0,9);
