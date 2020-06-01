@@ -17,14 +17,14 @@
 ;;reads 4 bytes and converts from littlendian to i32 unsigned
 (func $bignum (param $offset i32) (result i32)
 			(i32.load8_u (local.get $offset))
-				(i32.load8_u (i32.add (local.get $offset) (i32.const 1))
+				(i32.load8_u (i32.add (local.get $offset) (i32.const 1)))
 				(i32.const 256)
 			(i32.mul)
 		(i32.add)
-			(i32.load8_u (i32.add (local.get $offset) (i32.const 2))
+			(i32.load8_u (i32.add (local.get $offset) (i32.const 2)))
 				(i32.const 65536)
 			(i32.mul)
-			(i32.load8_u (i32.add (local.get $offset) (i32.const 3))
+			(i32.load8_u (i32.add (local.get $offset) (i32.const 3)))
 				(i32.const 16777216)
 			(i32.mul)
 		(i32.add)
@@ -133,7 +133,7 @@
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
-(func $mem (param $x i32) (param $y i32) (result i32)
+(func $mem (export "mem") (param $x i32) (param $y i32) (result i32)
 			(i32.add
 						(call $bignum (i32.const 1))
 						(i32.const 2)

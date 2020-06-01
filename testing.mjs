@@ -107,7 +107,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	// 		testfunc(i,j,321,color);
 	// 	}
 	// }
-	color = parseInt("FFFFF0F0",16);
+	color = parseInt("F0F0F0F0",16);
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
 	
@@ -123,7 +123,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[8] = canvas.width%(2^12)-canvas.width%(2^1)*2^4;
 
 
-	for (var i = 0; i < data.length; i += 4) {
+	for (var i = 0+offset; i < data.length+offset; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
 		data[i + 2] = heap[i + 2] //255 - data[i + 2]; // blue
