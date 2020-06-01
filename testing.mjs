@@ -24,6 +24,12 @@ const imports = {
 var canvas = document.getElementById('myCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+if (canvas.width > 1280/720*canvas.height){
+	canvas.width = 1280/720*canvas.height;
+}
+else if (canvas.width < 1280/720*canvas.height){
+	canvas.height = 720/1280*canvas.width;
+}
 var ctx = canvas.getContext('2d');
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
@@ -105,7 +111,17 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
 	
-	
+	var offset = 9;
+	heap[0] = offset;
+	heap[1] = canvas.width-canvas.width%(2^4);
+	heap[2] = canvas.width%(2^4)-canvas.width%(2^8)*2^4;
+	heap[3] = canvas.width%(2^8)-canvas.width%(2^12)*2^4;
+	heap[4] = canvas.width%(2^12)-canvas.width%(2^1)*2^4;
+	heap[5] = canvas.height-canvas.height%(2^4);
+	heap[6] = canvas.width%(2^4)-canvas.width%(2^8)*2^4;
+	heap[7] = canvas.width%(2^8)-canvas.width%(2^12)*2^4;
+	heap[8] = canvas.width%(2^12)-canvas.width%(2^1)*2^4;
+
 
 	for (var i = 0; i < data.length; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
