@@ -6,24 +6,25 @@
     "configurations": [
         {
             "type": "chrome",
-            "name": "Launch Brave against localhost",
             "request": "launch",
+            "name": "Brave",
+
             "runtimeExecutable": "/Applications/Brave Browser Dev.app/Contents/MacOS/Brave Browser Dev",
+            "url": "http://0.0.0.0:8080/",
+            "webRoot": "${workspaceRoot}",
+
             "userDataDir": true,
-            //"${workspaceRoot}/.gitignore/brave",
             "sourceMaps": true,
-            "url": "http://0.0.0.0:8000/",
+            
             // "trace": true,
-            "port": 8000,
-            "webRoot": "${workspaceRoot}"
             // "preLaunchTask": "${defaultBuildTask}"
         },
-        {
-            "type": "chrome",
-            "request": "attach",
-            "name": "Attach to Brave",
-            "port": 8000,
-            "webRoot": "${workspaceRoot}"
-        }
+        // {
+        //     "type": "chrome",
+        //     "request": "attach",
+        //     "name": "Attach to Brave",
+        //     "port": 8080,
+        //     "webRoot": "${workspaceRoot}"
+        // }
     ]
 }

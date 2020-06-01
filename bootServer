@@ -1,0 +1,5 @@
+nohup python3 -m http.server 8080 > /dev/null &         # no hangup server start up at port 8080 with std out /dev/null
+PID=$!                                                  # save PID of server process
+open http://0.0.0.0:8080                                # open server page through browser window
+read -n1 kbd                                            # wait any character input from stdin
+kill $PID                                               # exit server process with previously recorded PID

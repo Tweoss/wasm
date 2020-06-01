@@ -34,7 +34,7 @@ var data = imageData.data;
 // const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
 
 
-fetch('testing.wasm').then(response => 
+fetch('./testing.wasm').then(response => 
 	response.arrayBuffer()
 ).then(bytes => 
   WebAssembly.instantiate(bytes, imports)

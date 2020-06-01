@@ -3,11 +3,10 @@
 	"tasks": [
 		{
             "type": "shell",
-            "label": "open server",
-            "command": "python3",
+            "label": "npm start",
+            "command": "npm",
             "args": [
-                "-m",
-                "http.server"
+                "start"
             ],
 			"problemMatcher": [],
 			"group": "build"
