@@ -1,5 +1,5 @@
 {
     "scripts": {
-      "start": "python3 -m http.server"
+      "start": "python -m webbrowser -t 'http://0.0.0.0:8000/' && python3 -m http.server"
     }
 }
