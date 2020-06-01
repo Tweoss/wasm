@@ -73,9 +73,9 @@ fetch('./testing.wasm').then(response =>
 		heap[3] = canvas.width>>>16&255;
 		heap[4] = canvas.width>>>24&255;
 		heap[5] = canvas.height&255;
-		heap[6] = canvas.width>>>8&255;
-		heap[7] = canvas.width>>>16&255;
-		heap[8] = canvas.width>>>24&255;
+		heap[6] = canvas.height>>>8&255;
+		heap[7] = canvas.height>>>16&255;
+		heap[8] = canvas.height>>>24&255;
 	}
 
 
