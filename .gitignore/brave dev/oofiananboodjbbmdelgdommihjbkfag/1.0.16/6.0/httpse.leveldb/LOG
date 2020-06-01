@@ -1,7 +1,0 @@
-2020/05/09-10:39:42.876 df03 Recovering log #3
-2020/05/09-10:39:43.238 df03 Level-0 table #5: started
-2020/05/09-10:39:43.350 df03 Level-0 table #5: 2853472 bytes OK
-2020/05/09-10:39:43.357 df03 Recovering log #7
-2020/05/09-10:39:43.374 df03 Delete type=0 #7
-2020/05/09-10:39:43.374 df03 Delete type=0 #3
-2020/05/09-10:39:43.374 df03 Delete type=3 #2
