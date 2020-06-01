@@ -8,11 +8,6 @@
 )
 (export "_reverse" (func $_reverse))
 
-;; (func $strip (param $number i32) (param $bundle i32)
-;;   ;; number is the address of the number to be modified
-;;   ;; bundle gives which of the 4 bytes should be modified
-;;   i32.load8_u (i32.add ($number) (i32.mul $bundle i32.const 4))
-;; )
 
 ;;reads 4 bytes and converts from littlendian to i32 unsigned
 (func $bignum (param $offset i32) (result i32)
@@ -119,17 +114,7 @@
 	(local.get $y)
 	(f64.sub)
 )
-;; and the integer version
-	;; (func $normix (param $x i32) (result i32)
-	;; 	(i32.const 640)
-	;; 	(local.get $x)
-	;; 	(i32.sub)
-	;; )
-	;; (func $normiy (param $y i32) (result i32)
-	;; 	(i32.const 360)
-	;; 	(local.get $y)
-	;; 	(i32.sub)
-	;; )
+
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
@@ -173,6 +158,10 @@
 				(local.get $y)
 			;; (i32.sub)
 			(call $mem)
+				;; 	(local.get $x)
+				;; 	(local.get $y)
+				;; (call $mem)
+			;; (call $log)
 				;; (local.get $x)
 				;; (local.get $y)
 				;; (call $mem)

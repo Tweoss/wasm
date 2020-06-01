@@ -24,12 +24,7 @@ const imports = {
 var canvas = document.getElementById('myCanvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-if (canvas.width > 1280/720*canvas.height){
-	canvas.width = 1280/720*canvas.height;
-}
-else if (canvas.width < 1280/720*canvas.height){
-	canvas.height = 720/1280*canvas.width;
-}
+
 var ctx = canvas.getContext('2d');
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
@@ -60,72 +55,59 @@ fetch('./testing.wasm').then(response =>
 	function testfunc(x,y,z,color){
 		return results.instance.exports.main(x,y,z,color);
 	}
-	results.instance.exports.max(2,5,0);
 
-	// for(i = 3; i<1003;i++){
-	// 	testfunc(i,10,3);
-	// }
-	var i, j, k;
+	window.addEventListener('resize', resized);
+
+	function resized(e){
+		var canvas = document.getElementById('myCanvas');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;	
+		if (canvas.width > 1280/720*canvas.height){
+			canvas.width = 1280/720*canvas.height;
+		}
+		else if (canvas.width < 1280/720*canvas.height){
+			canvas.height = 720/1280*canvas.width;
+		}
+		heap[1] = canvas.width&255;
+		heap[2] = canvas.width>>>8&255;
+		heap[3] = canvas.width>>>16&255;
+		heap[4] = canvas.width>>>24&255;
+		heap[5] = canvas.height&255;
+		heap[6] = canvas.width>>>8&255;
+		heap[7] = canvas.width>>>16&255;
+		heap[8] = canvas.width>>>24&255;
+	}
+
+
 	var color
-	// // x = 1
-	// color = parseInt("FFFFF0F0",16);
-	// for (j = 21; j<321; j++){
-	// 	for (k = 21; k<321; k++){
-	// 		testfunc(21,j,k,color);
-	// 	}
-	// }
-	// // y = 1
-	// color = parseInt("FCBA03F0",16);
-	// for(i = 21; i<321; i+= .01){
-	// 	for (j = 21; j<321; j++){
-	// 		testfunc(i,21,j,color);
-	// 	}
-	// }
-	// // z = 1
-	// color = parseInt("00FFFFF0",16);
-	// for(i = 21; i<321; i+= .01){
-	// 	for (j = 21; j<321; j++){
-	// 		testfunc(i,j,21,color);
-	// 	}
-	// }
-	// // x = 301
-	// color = parseInt("FFFF00F0",16);
-	// for (j = 21; j<321; j++){
-	// 	for (k = 21; k<321; k++){
-	// 		testfunc(321,j,k,color);
-	// 	}
-	// }
-	
-	// // y = 301
-	// color = parseInt("F00FFFF0",16);
-	// for(i = 21; i<321; i+= .01){
-	// 	for (k = 21; k<321; k++){
-	// 		testfunc(i,321,k,color);
-	// 	}
-	// }
-	// // z = 301
-	// color = parseInt("F0F0F0F0",16);
-	// for(i = 21; i<321; i+= .01){
-	// 	for (j = 21; j<321; j++){
-	// 		testfunc(i,j,321,color);
-	// 	}
-	// }
 	color = parseInt("F0F0F0F0",16);
-	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
-	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
 	
 	var offset = 9;
 	heap[0] = offset;
-	heap[1] = canvas.width-canvas.width%(2^4);
-	heap[2] = canvas.width%(2^4)-canvas.width%(2^8)*2^4;
-	heap[3] = canvas.width%(2^8)-canvas.width%(2^12)*2^4;
-	heap[4] = canvas.width%(2^12)-canvas.width%(2^1)*2^4;
-	heap[5] = canvas.height-canvas.height%(2^4);
-	heap[6] = canvas.width%(2^4)-canvas.width%(2^8)*2^4;
-	heap[7] = canvas.width%(2^8)-canvas.width%(2^12)*2^4;
-	heap[8] = canvas.width%(2^12)-canvas.width%(2^1)*2^4;
+	// heap[1] = 1280&255;
+	// heap[2] = 1280>>>8&255;
+	// heap[3] = 1280>>>16&255;
+	// heap[4] = 1280>>>24&255;
+	// heap[5] = 720&255;
+	// heap[6] = 720>>>8&255;
+	// heap[7] = 720>>>16&255;
+	// heap[8] = 720>>>24&255;
+	heap[1] = canvas.width&255;
+	heap[2] = canvas.width>>>8&255;
+	heap[3] = canvas.width>>>16&255;
+	heap[4] = canvas.width>>>24&255;
+	heap[5] = canvas.height&255;
+	heap[6] = canvas.width>>>8&255;
+	heap[7] = canvas.width>>>16&255;
+	heap[8] = canvas.width>>>24&255;
+	
+	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
+	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
 
 
+function redraw(){
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
@@ -134,6 +116,12 @@ fetch('./testing.wasm').then(response =>
 	}
 	
 	ctx.putImageData(imageData, 0, 0);
+	requestAnimationFrame(redraw);	
+}
+redraw();
+
+
+
 	// console.log("PLACED");
 	const numbers = [14, 3, 77];
 	// console.log(numbers, 'becomes', reverse(numbers));
