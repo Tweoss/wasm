@@ -107,6 +107,7 @@ fetch('./testing.wasm').then(response =>
 
 function redraw(){
 	ctx.clearRect(0,0,canvas.width,canvas.height);
+	heap.fill(0,offset);
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
