@@ -35,11 +35,8 @@ var data = imageData.data;
 // const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
 
 
-fetch('./testing.wasm').then(response => 
-	response.arrayBuffer()
-).then(bytes => 
-  WebAssembly.instantiate(bytes, imports)
-).then(results => {
+WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
+.then(results => {
 	function reverse(arr) {
 		for (let i = 0; i < arr.length; ++i) {
 			heap[i] = arr[i];
@@ -80,11 +77,26 @@ fetch('./testing.wasm').then(response =>
 
 
 	var color
-	color = parseInt("cf0c0c00",16);
+	color = parseInt("9FFFF0FF",16);
+	//red controls red (or not?)
+	//green controls alpha
+	//blue controls blue
+	//alpha controls green
+	//extra blue dots are affected by the alpha
+		//try 00FFFFF0 for a blue that does not have extra dots
+		//or  0FFFFFF0 for the same blue
+		//try FFFFFFF0 for a rose color with extra blue dots
+		//try FFFFFFFF for complete white with extra blue dots
+		//try 00F000F0 for a lime green with no extra dots
+		//try 9FFF0000 for a maroon red with black dots
+		//try 9FFFF000 for a purple with blue dots
+		
+
+
 	
 	var offset = 9;
 	heap[0] = offset;
-	// resized();
+	resized();
 	// heap[1] = 1280&255;
 	// heap[2] = 1280>>>8&255;
 	// heap[3] = 1280>>>16&255;
@@ -105,11 +117,10 @@ fetch('./testing.wasm').then(response =>
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
 	// results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
-	
+	let colori;
 	function redraw(){
-		// ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
-		
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
@@ -121,7 +132,7 @@ fetch('./testing.wasm').then(response =>
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
 		data[i + 2] = heap[i + 2] //255 - data[i + 2]; // blue
 		data[i + 3] = heap[i + 3] //255;               //alpha
-		if (heap[i] == 240){
+		if (heap[i] != 0){
 			j++;
 			memfail = i;
 		}

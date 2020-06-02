@@ -26,6 +26,50 @@
 	(i32.add)
 )
 
+(func $store (export "store") (param $address i32) (param $num i32) 
+			(local.get $num)
+			(i32.const 255)
+		(i32.and)
+			(local.get $address)
+			(i32.const 3)
+		(i32.add)
+	(i32.store8)
+					(local.get $num)
+					(i32.const 4)
+				(i32.shr_u)
+			(i32.const 255)
+		(i32.and)
+			(local.get $address)
+			(i32.const 2) 
+		(i32.add)
+	(i32.store8)
+					(local.get $num)
+					(i32.const 8)
+				(i32.shr_u)
+			(i32.const 255)
+		(i32.and)
+			(local.get $address)
+			(i32.const 1)
+		(i32.add)
+	(i32.store8)
+					(local.get $num)
+					(i32.const 12)
+				(i32.shr_u)
+			(i32.const 255)
+		(i32.and)
+			(local.get $address)
+			(i32.const 0)
+		(i32.add)
+	(i32.store8)
+						(local.get $num)
+						(i32.const 4)
+					(i32.shr_u)
+				(i32.const 255)
+			(i32.and)
+		(call $log)
+
+)
+
 ;;takes two numbers and avgs them, f64 encodes with 11 bit exponent and 52 bit mantissa
 (func $avg (param $num1 f64) (param $num2 f64) (result f64)
 	(f64.add
@@ -128,7 +172,7 @@
 					(i32.div_u)
 					(local.get $x)
 				(i32.sub)
-							(call $bignum (i32.const 1))
+							(call $bignum (i32.const 5))
 							(i32.const 2)
 						(i32.div_u)
 						(local.get $y)
@@ -173,17 +217,17 @@
 			;; 	(local.get $color)
 			;; (call $log)
 			(local.get $color)
+			(call $store)
+			;; (i32.store)
 					(local.get $color)
 					(i32.const -821294080)
 				(i32.ne)
 				(if
 				(then
-					(local.get $color)
-					(call $log)
+					;; (local.get $color)
+					;; (call $log)
 				)
 				)
-
-			(i32.store)
 		)
 
 	)
@@ -223,7 +267,7 @@
 ;;when passing in, pass triangle vertices in COUNTERCLOCKWISE 
 ;;(with highest x (or y (or z))) (maybe)
 
-(func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32) (param )
+(func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32)
 
 	;;START	LOCAL DECLARATION
 		(local $xr0 i32);;	canvas coords
@@ -715,8 +759,10 @@
 												(if (local.get $e20)
 												(then
 													(call $pshade
-														(i32.trunc_f64_s (call $normx (local.get $i)))
-														(i32.trunc_f64_s (call $normy (local.get $j)))
+														;; (i32.trunc_f64_s (call $normx (local.get $i)))
+														;; (i32.trunc_f64_s (call $normy (local.get $j)))
+														(i32.trunc_f64_s (local.get $i))
+														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
 													)
 												)
