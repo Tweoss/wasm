@@ -172,7 +172,7 @@
 			;; (call $log)
 			(local.get $color)
 					(local.get $color)
-					(i32.const 12569036)
+					(i32.const -821294080)
 				(i32.ne)
 				(if
 				(then

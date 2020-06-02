@@ -80,7 +80,7 @@ fetch('./testing.wasm').then(response =>
 
 
 	var color
-	color = parseInt("cf0c0c",16);
+	color = parseInt("cf0c0c00",16);
 	
 	var offset = 9;
 	heap[0] = offset;
