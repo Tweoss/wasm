@@ -104,12 +104,14 @@
 )
 
 ;;normalizes the canvas coords based on the size (assumes a 1280,720)
-(func $normx (param $x f64) (result f64)
+(func $normx (export "normx") (param $x f64) (result f64)
 	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
+		(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
+		(call $logf)
 	(local.get $x)
 	(f64.sub)
 )
-(func $normy (param $y f64) (result f64)
+(func $normy (export "normy") (param $y f64) (result f64)
 	;; (f64.const 360)
 	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 5)) (i32.const 2)))
 	(local.get $y)
@@ -145,10 +147,10 @@
 ;;shades a pixel (bounds checking)
 (func $pshade (export "pshade") (param $x i32) (param $y i32) (param $color i32)
 			(i32.ge_s (local.get $x) (i32.const 0	))
-			(i32.lt_s (local.get $x) (i32.const 1280))
+			(i32.lt_s (local.get $x) (call $bignum (i32.const 1)))
 		(i32.and)
 			(i32.ge_s (local.get $y) (i32.const 0	))
-			(i32.lt_s (local.get $y) (i32.const 720	))
+			(i32.lt_s (local.get $y) (call $bignum (i32.const 5)))
 		(i32.and)
 	(i32.and)
 
@@ -203,7 +205,7 @@
 	(call $proj (local.get $x) (local.get $z)) ;; 2d equiv is y
 	(call $normy)
 	(local.tee $row (i32.trunc_f64_u))
-	(i32.const 1280)
+	(call $bignum (i32.const 1))
 	(i32.mul)
 	(call $proj (local.get $x) (local.get $y)) ;; 2d equiv is x
 	(call $normx)

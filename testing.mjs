@@ -68,14 +68,14 @@ fetch('./testing.wasm').then(response =>
 		else if (canvas.width < 1280/720*canvas.height){
 			canvas.height = 720/1280*canvas.width;
 		}
-		heap[1] = canvas.width&255;
-		heap[2] = canvas.width>>>8&255;
-		heap[3] = canvas.width>>>16&255;
-		heap[4] = canvas.width>>>24&255;
-		heap[5] = canvas.height&255;
-		heap[6] = canvas.height>>>8&255;
-		heap[7] = canvas.height>>>16&255;
-		heap[8] = canvas.height>>>24&255;
+		heap[1] = (canvas.width&255);
+		heap[2] = (canvas.width>>>8)&255;
+		heap[3] = (canvas.width>>>16)&255;
+		heap[4] = (canvas.width>>>24)&255;
+		heap[5] = (canvas.height&255);
+		heap[6] = (canvas.height>>>8)&255;
+		heap[7] = (canvas.height>>>16)&255;
+		heap[8] = (canvas.height>>>24)&255;
 	}
 
 
@@ -84,7 +84,7 @@ fetch('./testing.wasm').then(response =>
 	
 	var offset = 9;
 	heap[0] = offset;
-	resized();
+	// resized();
 	// heap[1] = 1280&255;
 	// heap[2] = 1280>>>8&255;
 	// heap[3] = 1280>>>16&255;
@@ -98,20 +98,20 @@ fetch('./testing.wasm').then(response =>
 	heap[3] = canvas.width>>>16&255;
 	heap[4] = canvas.width>>>24&255;
 	heap[5] = canvas.height&255;
-	heap[6] = canvas.width>>>8&255;
-	heap[7] = canvas.width>>>16&255;
-	heap[8] = canvas.width>>>24&255;
+	heap[6] = canvas.height>>>8&255;
+	heap[7] = canvas.height>>>16&255;
+	heap[8] = canvas.height>>>24&255;
 	
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
-	results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
+	// results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
 	
 	function redraw(){
 		// ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
 		
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
-		results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
+		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
 
 	let j = 0;
