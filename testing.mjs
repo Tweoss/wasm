@@ -80,7 +80,7 @@ fetch('./testing.wasm').then(response =>
 
 
 	var color
-	color = parseInt("FFF0F0F0",16);
+	color = parseInt("cf0c0c",16);
 	
 	var offset = 9;
 	heap[0] = offset;
@@ -114,13 +114,19 @@ fetch('./testing.wasm').then(response =>
 		results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
 
 
+	let j = 0;
+	let memfail = 0;
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
 		data[i + 2] = heap[i + 2] //255 - data[i + 2]; // blue
 		data[i + 3] = heap[i + 3] //255;               //alpha
+		if (heap[i] == 240){
+			j++;
+			memfail = i;
+		}
 	}
-	
+	// console.log(j)
 	ctx.putImageData(imageData, 0, 0);
 	requestAnimationFrame(redraw);	
 }

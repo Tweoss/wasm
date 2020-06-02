@@ -137,6 +137,8 @@
 			(i32.const 4)
 		(i32.mul)
 		(i32.load8_u (i32.const 0))
+			;; (i32.load8_u (i32.const 0))
+			;; (call $log)
 	(i32.add)
 )
 
@@ -170,7 +172,7 @@
 			;; (call $log)
 			(local.get $color)
 					(local.get $color)
-					(i32.const -986896)
+					(i32.const 12569036)
 				(i32.ne)
 				(if
 				(then
