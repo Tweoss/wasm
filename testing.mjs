@@ -26,9 +26,9 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 var ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
-
 
 // const wasmSource = new Uint8Array(fs.readFileSync("testing.wasm"));
 // const wasmModule = new WebAssembly.Module(wasmSource);
@@ -80,10 +80,11 @@ fetch('./testing.wasm').then(response =>
 
 
 	var color
-	color = parseInt("F0F0F0F0",16);
+	color = parseInt("FFF0F0F0",16);
 	
 	var offset = 9;
 	heap[0] = offset;
+	resized();
 	// heap[1] = 1280&255;
 	// heap[2] = 1280>>>8&255;
 	// heap[3] = 1280>>>16&255;
@@ -102,13 +103,17 @@ fetch('./testing.wasm').then(response =>
 	heap[8] = canvas.width>>>24&255;
 	
 	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
-	results.instance.exports.trishade(21,321,321,21,321,0,21,0,321,color);
+	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
+	results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
+	
+	function redraw(){
+		// ctx.clearRect(0,0,canvas.width,canvas.height);
+		heap.fill(0,offset);
+		
+		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
+		results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
 
 
-function redraw(){
-	ctx.clearRect(0,0,canvas.width,canvas.height);
-	heap.fill(0,offset);
-	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
 		data[i]     = heap[i]     //9   - data[i];     // red
 		data[i + 1] = heap[i + 1] //255 - data[i + 1]; // green
