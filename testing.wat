@@ -63,7 +63,6 @@
 			(i32.shr_s)
 		(i32.and)
 	(i32.add)
-	;; (call $log)
 )
 ;;takes three args and returns the max
 (func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
@@ -91,7 +90,6 @@
 			(i32.shr_s)
 		(i32.and)
 	(i32.add)
-	;; (call $log)
 )
 
 ;;takes the 3d coords and pushes to stack the 2d canvas coords
@@ -107,8 +105,6 @@
 ;;normalizes the canvas coords based on the size (assumes a 1280,720)
 (func $normx (export "normx") (param $x f64) (result f64)
 	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
-		(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
-		(call $logf)
 	(local.get $x)
 	(f64.sub)
 )
@@ -140,8 +136,6 @@
 			(i32.const 4)
 		(i32.mul)
 		(i32.load8_u (i32.const 0))
-			;; (i32.load8_u (i32.const 0))
-			;; (call $log)
 	(i32.add)
 )
 
@@ -154,41 +148,14 @@
 			(i32.lt_s (local.get $y) (i32.div_s (call $bignum (i32.const 5)) (i32.const 2)))
 		(i32.and)
 	(i32.and)
-		;; (local.get $x)
-		;; (call $log)
-		;; (local.get $y)
-		;; (call $log)
 
 	(if
 		(then
-				;; (i32.const 640)
 				(local.get $x)
-			;; (i32.sub)
-			;; 	(i32.const 360)
 				(local.get $y)
-			;; (i32.sub)
 			(call $mem)
-				;; 	(local.get $x)
-				;; 	(local.get $y)
-				;; (call $mem)
-			;; (call $log)
-				;; (local.get $x)
-				;; (local.get $y)
-				;; (call $mem)
-			;; 	(local.get $color)
-			;; (call $log)
 			(local.get $color)
-			;; (call $store)
 			(i32.store)
-					(local.get $color)
-					(i32.const -821294080)
-				(i32.ne)
-				(if
-				(then
-					;; (local.get $color)
-					;; (call $log)
-				)
-				)
 		)
 
 	)
@@ -562,8 +529,6 @@
 					;;loop logic (end part) (increment, break if over)
 					(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
 
-					;; (call $log (i32.trunc_f64_s (local.get $i)))
-					;; (call $log (i32.trunc_f64_s (local.get $j)))
 						;; if the point is in the triangle v0-v1 edge
 										(local.get $i) ;;P.x
 										(local.get $xc0) ;;V0.x
@@ -742,7 +707,6 @@
 						)
 
 					;;loop logic (end part) (increment, break if over)
-					;; (call $log (local.get $xb0))
 					(local.tee $i (call $increment (local.get $i)))
 					(br 0)
 				)
@@ -752,12 +716,6 @@
 				(br 0)
 			)
 			)
-			;; (call $logf (call $proj (local.get $x0) (local.get $y0)))
-			;; (call $logf (call $proj (local.get $x0) (local.get $z0)))
-			;; (call $logf (call $proj (local.get $x1) (local.get $y1)))
-			;; (call $logf (call $proj (local.get $x1) (local.get $z1)))
-			;; (call $logf (call $proj (local.get $x2) (local.get $y2)))
-			;; (call $logf (call $proj (local.get $x2) (local.get $z2)))
 
 		);;the end of the main
 		);;if block
