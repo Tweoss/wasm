@@ -77,7 +77,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 
 
 	var color;
-	color = parseInt("FFFFF0FF",16);
+	color = parseInt("F7F711FF",16);
+
+	//NEW
+	//red controls green
+	//green controls blue
+	//blue controls alpha
+	//alpha controls red
+
+
 	//red controls red (or not?)
 	//green controls alpha
 	//blue controls blue
@@ -114,10 +122,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[7] = canvas.height>>>16&255;
 	heap[8] = canvas.height>>>24&255;
 	
-	results.instance.exports.trishade(21,-100,-100,21,0,321,21,321,0,color);
+	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
 	// results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
-	console.log(heap);
+	// console.log(heap);
 	let colori;
 	function redraw(){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -129,10 +137,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	let j = 0;
 	let memfail = 0;
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
-		data[i		- offset] = heap[i]     //9   - data[i];     // red
-		data[i + 1 	- offset] = heap[i + 1] //255 - data[i + 1]; // green
-		data[i + 2 	- offset] = heap[i + 2] //255 - data[i + 2]; // blue
-		data[i + 3 	- offset] = heap[i + 3] //255;               //alpha
+		data[i		- offset] = heap[i + 3] //9   - data[i];     // red
+		data[i + 1 	- offset] = heap[i + 2] //255 - data[i + 1]; // green
+		data[i + 2 	- offset] = heap[i + 1] //255 - data[i + 2]; // blue
+		data[i + 3 	- offset] = heap[i]     //255;               //alpha
 		if (heap[i+2] != 0){
 			j++;
 			memfail = i;
