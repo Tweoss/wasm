@@ -101,8 +101,16 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[7] = canvas.height>>>16&255;
 	heap[8] = canvas.height>>>24&255;
 	
-	results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
+	// results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
+
+	for (var i = 0+offset; i < data.length+offset; i += 4) {
+		data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
+		data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
+		data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
+		data[i + 3 	- offset] = heap[i]    ; //255;               //alpha
+		}
+	ctx.putImageData(imageData, 0, 0);
 	// results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
 	// console.log(heap);
 	let colori;
@@ -113,22 +121,22 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
 
-	let j = 0;
-	let memfail = 0;
-	for (var i = 0+offset; i < data.length+offset; i += 4) {
-		data[i		- offset] = heap[i + 3] //9   - data[i];     // red
-		data[i + 1 	- offset] = heap[i + 2] //255 - data[i + 1]; // green
-		data[i + 2 	- offset] = heap[i + 1] //255 - data[i + 2]; // blue
-		data[i + 3 	- offset] = heap[i]     //255;               //alpha
-		if (heap[i+2] != 0){
-			j++;
-			memfail = i;
+		let j = 0;
+		let memfail = 0;
+		for (var i = 0+offset; i < data.length+offset; i += 4) {
+			data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
+			data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
+			data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
+			data[i + 3 	- offset] = heap[i];     //255;               //alpha
+			if (heap[i+2] != 0){
+				j++;
+				memfail = i;
+			}
 		}
+		ctx.putImageData(imageData, 0, 0);
+		requestAnimationFrame(redraw);	
 	}
-	ctx.putImageData(imageData, 0, 0);
-	requestAnimationFrame(redraw);	
-}
-redraw();
+// redraw();
 
 
 
