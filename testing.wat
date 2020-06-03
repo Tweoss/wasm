@@ -109,14 +109,14 @@
 	;;c * (viewdir dot (xyz-view)) = mag(viewdir)
 	;;c = mag(viewdir)/(viewdir dot (xyz-view))
 
-						(local.get $viewx)
-						(local.get $viewx)
+						(local.get $viewdirx)
+						(local.get $viewdirx)
 					(f64.mul)
-							(local.get $viewy)
-							(local.get $viewy)
+							(local.get $viewdiry)
+							(local.get $viewdiry)
 						(f64.mul)
-							(local.get $viewz)
-							(local.get $viewz)
+							(local.get $viewdirz)
+							(local.get $viewdirz)
 						(f64.mul)
 					(f64.add)
 				(f64.add)
@@ -140,11 +140,13 @@
 		(f64.div)
 	(local.set $c)
 	(f64.store (i32.const 9) (local.get $c))
-
 	;;to get the x value of canvas
 	;;project of c*(xyz-view) onto (viewup cross viewdir)/mag(viewup cross viewdir)
 	;;(c*(xyz-view) dot (viewup cross viewdir))/mag(viewup cross viewdir)
 
+;; i j k
+;; x y z
+;; x y z
 
 
 						(local.get $x)
@@ -232,7 +234,6 @@
 			(f64.add)
 		(f64.add)
 	(f64.div)
-		
 
 )
 
@@ -243,14 +244,14 @@
 	;;c * (viewdir dot (xyz-view)) = mag(viewdir)
 	;;c = mag(viewdir)/(viewdir dot (xyz-view))
 
-					(local.get $viewx)
-					(local.get $viewx)
+					(local.get $viewdirx)
+					(local.get $viewdirx)
 				(f64.mul)
-						(local.get $viewy)
-						(local.get $viewy)
+						(local.get $viewdiry)
+						(local.get $viewdiry)
 					(f64.mul)
-						(local.get $viewz)
-						(local.get $viewz)
+						(local.get $viewdirz)
+						(local.get $viewdirz)
 					(f64.mul)
 				(f64.add)
 			(f64.add)
@@ -435,28 +436,29 @@
 
 	;;START	PROJECTION EVALUATION
 		;; (local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
+		;; 	(call $log)
 		;; (local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
+		;; 	(call $log)
 		;; (local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
+		;; 	(call $log)
 		;; (local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
+		;; 	(call $log)
 		;; (local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
+		;; 	(call $log)
 		;; (local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 		;; 	(call $log)
-		;; 	(call $log)
-		;; 	(call $log)
-		;; 	(call $log)
-		;; 	(call $log)
-		;; 	(call $log)
+
 		(local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 		(local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 		(local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 		(local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 		(local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 		(local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		(call $log)
-		(call $log)
-		(call $log)
-		(call $log)
-		(call $log)
 		(call $log)
 	;;END	PROJECTION EVALUATION
 
