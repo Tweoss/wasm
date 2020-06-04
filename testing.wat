@@ -426,6 +426,7 @@
 		(local $yb0 i32);; (signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
+		(local $zde f64);;	z depth
 		(local $e01 i32);;	validity t/f of edges (top left rule)
 		(local $e12 i32);;	(binary)
 		(local $e20 i32)
@@ -737,7 +738,12 @@
 
 		(if	  ;;the start of the main
 		(then ;;if block
-			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
+
+			;;START calculates area of entire triangle
+				
+			;;END	caluculates area of entire triangle
+
+
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block
 			(loop ;;loop through the x bounds of the projected triangle
@@ -819,9 +825,7 @@
 								(if		;;if the point is in
 								(then	;;the v2-v0 boundary			
 									(call $pshade
-										;; (i32.trunc_f64_s (call $normx (local.get $i)))
 										(i32.trunc_f64_s (local.get $i))
-										;; (i32.trunc_f64_s (call $normy (local.get $j)))
 										(i32.trunc_f64_s (local.get $j))
 										(local.get $color)
 									)
@@ -835,8 +839,6 @@
 											(then
 												(if (local.get $e12)
 													(call $pshade
-														;; (i32.trunc_f64_s (call $normx (local.get $i)))
-														;; (i32.trunc_f64_s (call $normy (local.get $j)))
 														(i32.trunc_f64_s (local.get $i))
 														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
@@ -848,8 +850,6 @@
 												(then
 													(if (local.get $e20)
 														(call $pshade
-															;; (i32.trunc_f64_s (call $normx (local.get $i)))
-															;; (i32.trunc_f64_s (call $normy (local.get $j)))
 															(i32.trunc_f64_s (local.get $i))
 															(i32.trunc_f64_s (local.get $j))
 															(local.get $color)
@@ -858,8 +858,6 @@
 												)
 												(else
 													(call $pshade
-														;; (i32.trunc_f64_s (call $normx (local.get $i)))
-														;; (i32.trunc_f64_s (call $normy (local.get $j)))
 														(i32.trunc_f64_s (local.get $i))
 														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
@@ -882,8 +880,6 @@
 													(if (local.get $e20)
 													(then
 														(call $pshade
-															;; (i32.trunc_f64_s (call $normx (local.get $i)))
-															;; (i32.trunc_f64_s (call $normy (local.get $j)))
 															(i32.trunc_f64_s (local.get $i))
 															(i32.trunc_f64_s (local.get $j))
 															(local.get $color)
@@ -893,8 +889,6 @@
 												)
 												(else
 													(call $pshade
-														;; (i32.trunc_f64_s (call $normx (local.get $i)))
-														;; (i32.trunc_f64_s (call $normy (local.get $j)))
 														(i32.trunc_f64_s (local.get $i))
 														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
@@ -910,8 +904,6 @@
 												(if (local.get $e20)
 												(then
 													(call $pshade
-														;; (i32.trunc_f64_s (call $normx (local.get $i)))
-														;; (i32.trunc_f64_s (call $normy (local.get $j)))
 														(i32.trunc_f64_s (local.get $i))
 														(i32.trunc_f64_s (local.get $j))
 														(local.get $color)
