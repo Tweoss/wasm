@@ -79,40 +79,23 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var color;
 	color = parseInt("F7F711FF",16);
 
-	//NEW
-	//red controls green
-	//green controls blue
-	//blue controls alpha
-	//alpha controls red
 
-
-	//red controls red (or not?)
-	//green controls alpha
-	//blue controls blue
-	//alpha controls green
-	//extra blue dots are affected by the alpha
-		//try 00FFFFF0 for a blue that does not have extra dots
-		//or  0FFFFFF0 for the same blue
-		//try FFFFFFF0 for a rose color with extra blue dots
-		//try FFFFFFFF for complete white with extra blue dots
-		//try 00F000F0 for a lime green with no extra dots
-		//try 9FFF0000 for a maroon red with black dots
-		//try 9FFFF000 for a purple with blue dots
-		
-
-
+	//HEAP INFORMATION
+	//	0 		- size of offset
+	//	1 		- canvas width least sig
+	//	2-4		- canvas width
+	//	5-8		- canvas height
+	//	9-25	- intermediate calcs
 	
-	var offset = 9;
+	//	offset	- triangle
+	//	0 -31	- little endian
+	//	32-95	- z buffer
+
+	//	offset is the largest number from heap information + 1
+	//	offset is one byte, so max is 255
+	var offset = 26;
 	heap[0] = offset;
 	resized();
-	// heap[1] = 1280&255;
-	// heap[2] = 1280>>>8&255;
-	// heap[3] = 1280>>>16&255;
-	// heap[4] = 1280>>>24&255;
-	// heap[5] = 720&255;
-	// heap[6] = 720>>>8&255;
-	// heap[7] = 720>>>16&255;
-	// heap[8] = 720>>>24&255;
 	heap[1] = canvas.width&255;
 	heap[2] = canvas.width>>>8&255;
 	heap[3] = canvas.width>>>16&255;
@@ -122,8 +105,16 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[7] = canvas.height>>>16&255;
 	heap[8] = canvas.height>>>24&255;
 	
-	results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
+	// results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
+
+	for (var i = 0+offset; i < data.length+offset; i += 4) {
+		data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
+		data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
+		data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
+		data[i + 3 	- offset] = heap[i]    ; //255;               //alpha
+		}
+	ctx.putImageData(imageData, 0, 0);
 	// results.instance.exports.trishade(21,350,0,21,0,321,21,321,0,color);
 	// console.log(heap);
 	let colori;
@@ -131,25 +122,24 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
-		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
+		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
 
-	let j = 0;
-	let memfail = 0;
-	for (var i = 0+offset; i < data.length+offset; i += 4) {
-		data[i		- offset] = heap[i + 3] //9   - data[i];     // red
-		data[i + 1 	- offset] = heap[i + 2] //255 - data[i + 1]; // green
-		data[i + 2 	- offset] = heap[i + 1] //255 - data[i + 2]; // blue
-		data[i + 3 	- offset] = heap[i]     //255;               //alpha
-		if (heap[i+2] != 0){
-			j++;
-			memfail = i;
+		let j = 0;
+		let memfail = 0;
+		for (var i = 0+offset; i < data.length+offset; i += 4) {
+			data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
+			data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
+			data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
+			data[i + 3 	- offset] = heap[i];     //255;               //alpha
+			if (heap[i+2] != 0){
+				j++;
+				memfail = i;
+			}
 		}
+		ctx.putImageData(imageData, 0, 0);
+		requestAnimationFrame(redraw);	
 	}
-	// console.log(j)
-	ctx.putImageData(imageData, 0, 0);
-	requestAnimationFrame(redraw);	
-}
 redraw();
 
 
