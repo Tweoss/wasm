@@ -87,6 +87,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	//	5-8		- canvas height
 	//	9-25	- intermediate calcs
 	
+	//	offset	- triangle
+	//	0 -31	- little endian
+	//	32-95	- z buffer
+
 	//	offset is the largest number from heap information + 1
 	//	offset is one byte, so max is 255
 	var offset = 26;
@@ -117,7 +121,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	function redraw(){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
-		results.instance.exports.trishade(21,-120,-210,21,0,341,21,321,0,color);
+		results.instance.exports.trishade(21,0,0,21,0,341,21,321,0,color);
 		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
 
@@ -136,7 +140,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}
-// redraw();
+redraw();
 
 
 
