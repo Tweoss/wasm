@@ -8,25 +8,6 @@
 )
 (export "_reverse" (func $_reverse))
 
-
-;;reads 4 bytes and converts from littlendian to i32 unsigned
-(func $bignum (param $offset i32) (result i32)
-	;; 		(i32.load8_u (local.get $offset))
-	;; 			(i32.load8_u (i32.add (local.get $offset) (i32.const 1)))
-	;; 			(i32.const 256)
-	;; 		(i32.mul)
-	;; 	(i32.add)
-	;; 		(i32.load8_u (i32.add (local.get $offset) (i32.const 2)))
-	;; 			(i32.const 65536)
-	;; 		(i32.mul)
-	;; 		(i32.load8_u (i32.add (local.get $offset) (i32.const 3)))
-	;; 			(i32.const 16777216)
-	;; 		(i32.mul)
-	;; 	(i32.add)
-	;; (i32.add)
-	(i32.load (local.get $offset))
-)
-
 ;;takes two numbers and avgs them, f64 encodes with 11 bit exponent and 52 bit mantissa
 (func $avg (param $num1 f64) (param $num2 f64) (result f64)
 	(f64.add
@@ -102,35 +83,23 @@
 	(f64.mul)
 )
 
-;;normalizes the canvas coords based on the size (assumes a 1280,720)
-(func $normx (export "normx") (param $x f64) (result f64)
-	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
-	(local.get $x)
-	(f64.sub)
-)
-(func $normy (export "normy") (param $y f64) (result f64)
-	;; (f64.const 360)
-	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 5)) (i32.const 2)))
-	(local.get $y)
-	(f64.sub)
-)
 
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
 (func $mem (export "mem") (param $x i32) (param $y i32) (result i32)
 			(i32.add
-						(call $bignum (i32.const 1))
+						(i32.load (i32.const 1))
 						(i32.const 2)
 					(i32.div_u)
 					(local.get $x)
 				(i32.sub)
-							(call $bignum (i32.const 5))
+							(i32.load (i32.const 5))
 							(i32.const 2)
 						(i32.div_u)
 						(local.get $y)
 					(i32.sub)
-					(call $bignum (i32.const 1))
+					(i32.load (i32.const 1))
 				(i32.mul)
 			)
 			(i32.const 4)
@@ -141,11 +110,11 @@
 
 ;;shades a pixel (bounds checking)
 (func $pshade (export "pshade") (param $x i32) (param $y i32) (param $color i32)
-			(i32.ge_s (local.get $x) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 1))) (i32.const 2)))
-			(i32.lt_s (local.get $x) (i32.div_s (call $bignum (i32.const 1)) (i32.const 2)))
+			(i32.ge_s (local.get $x) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)))
+			(i32.lt_s (local.get $x) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)))
 		(i32.and)
-			(i32.ge_s (local.get $y) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 1))) (i32.const 2)))
-			(i32.lt_s (local.get $y) (i32.div_s (call $bignum (i32.const 5)) (i32.const 2)))
+			(i32.ge_s (local.get $y) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)))
+			(i32.lt_s (local.get $y) (i32.div_s (i32.load (i32.const 5)) (i32.const 2)))
 		(i32.and)
 	(i32.and)
 
@@ -172,22 +141,6 @@
 
 ;; assumes 1280, 720
 (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32)
-	(local $row i32)
-	(local $col i32)
-	(call $proj (local.get $x) (local.get $z)) ;; 2d equiv is y
-	(call $normy)
-	(local.tee $row (i32.trunc_f64_u))
-	(call $bignum (i32.const 1))
-	(i32.mul)
-	(call $proj (local.get $x) (local.get $y)) ;; 2d equiv is x
-	(call $normx)
-	(local.tee $col (i32.trunc_f64_u))
-	(i32.add)
-	(i32.const 4)
-	(i32.mul)
-
-	(local.get $color) ;; color
-	(i32.store)
 
 )
 
@@ -214,6 +167,8 @@
 		(local $yb0 i32);; (signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
+		(local $tri f64);;	area of the triangle
+		(local $var f64);;	temporary var preventing reevaluation for squaring
 		(local $e01 i32);;	validity t/f of edges (top left rule)
 		(local $e12 i32);;	(binary)
 		(local $e20 i32)
@@ -232,127 +187,6 @@
 		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
 		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
 	;;END	PROJECTION EVALUATION
-
-	;;START	Clockwise EDGE TRUTH EVALUATION
-
-		;; 	;; 	(local.get $yc1) ;;next vertex
-		;; 	;; 	(local.get $yc0) ;;prev vertex
-		;; 	;; (f64.gt)
-		;; 	;; ;;left
-		;; 	;; 		(local.get $yc2) ;;next
-		;; 	;; 		(local.get $yc1) ;;prev
-		;; 	;; 	(f64.eq)
-		;; 	;; 		(local.get $xc2) ;;next
-		;; 	;; 		(local.get $xc1) ;;prev
-		;; 	;; 	(f64.gt)
-		;; 	;; (i32.and)
-		;; 	;; ;;top
-		;; 	;; (local.set $e11 (f64.const 1))
-
-		;; 	(local.get $yc1) 
-		;; 	(local.get $yc0)
-		;; (f64.gt)
-		;; (if ;;e01 is l
-		;; (then
-		;; 	(local.set $e01 (i32.const 1))
-		;; 		(local.get $yc2) 
-		;; 		(local.get $yc1)
-		;; 	(f64.gt)
-		;; 	(if ;;e12 is l
-		;; 	(then
-		;; 		(local.set $e12 (i32.const 1))
-		;; 		(local.set $e20 (i32.const 0))
-		;; 	)
-		;; 	(else
-		;; 				(local.get $yc2) ;;next
-		;; 				(local.get $yc1) ;;prev
-		;; 			(f64.eq)
-		;; 				(local.get $xc2) ;;next
-		;; 				(local.get $xc1) ;;prev
-		;; 			(f64.gt)
-		;; 		(i32.and)
-		;; 		(if ;;e12 is t
-		;; 		(then
-		;; 			(local.set $e12 (i32.const 1))
-		;; 			(local.set $e20 (i32.const 0))
-		;; 		)
-		;; 		(else ;;e12 is n
-		;; 			(local.set $e12 (i32.const 0))
-		;; 				(local.get $yc0) 
-		;; 				(local.get $yc2)
-		;; 			(f64.gt)
-		;; 			(if
-		;; 			(then
-		;; 				(local.set $e20 (i32.const 1))
-		;; 			)
-		;; 			(else
-		;; 				(local.set $e20 (i32.const 0))
-		;; 			)
-		;; 			)
-		;; 		)
-		;; 		)
-		;; 	)
-		;; 	)
-		;; )
-		;; (else
-		;; 			(local.get $yc1)
-		;; 			(local.get $yc0)
-		;; 		(f64.eq)
-		;; 			(local.get $xc1)
-		;; 			(local.get $xc0)
-		;; 		(f64.gt)
-		;; 	(i32.and)
-		;; 	(if ;;e01 is t
-		;; 	(then
-		;; 		(local.set $e01 (i32.const 1))
-		;; 		(local.set $e12 (i32.const 0))
-		;; 		(local.set $e20 (i32.const 1))
-		;; 	)
-		;; 	(else ;;e01 is n
-		;; 			(local.get $yc2)
-		;; 			(local.get $yc1)
-		;; 		(f64.gt);;)
-		;; 		(if ;;e12 is l
-		;; 		(then
-		;; 			(local.set $e12 (i32.const 1))
-		;; 				(local.get $yc0)
-		;; 				(local.get $yc2)
-		;; 			(f64.gt)
-		;; 			(if ;;e20 is l
-		;; 			(then
-		;; 				(local.set $e20 (i32.const 1))
-		;; 			)
-		;; 			(else
-		;; 						(local.get $yc0)
-		;; 						(local.get $yc2)
-		;; 					(f64.eq)
-		;; 						(local.get $xc0)
-		;; 						(local.get $xc2)
-		;; 					(f64.gt)
-		;; 				(i32.and)
-		;; 				(if ;;e20 is t
-		;; 				(then
-		;; 					(local.set $e20 (i32.const 1))
-		;; 				)
-		;; 				(else ;;e20 is n
-		;; 					(local.set $e20 (i32.const 0))
-		;; 				)
-		;; 				)
-		;; 			)
-		;; 			)
-		;; 		)
-		;; 		(else ;;e12 is n
-		;; 			(local.set $e12 (i32.const 0))
-		;; 			(local.set $e20 (i32.const 1))
-		;; 		)
-					
-		;; 		)
-		;; 	)
-		;; 	)
-		;; )
-		;; )
-
-	;;END	Clockwise EDGE TRUTH EVALUATION
 
 	;;START Counterclockwise EDGE TRUTH EVALUATION
 		;; 	(local.get $yc1) ;;next vertex
@@ -491,18 +325,18 @@
 		(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
 		(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
 		(local.set $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-						(i32.ge_s (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 1))) (i32.const 2)));;(i32.const -640))
-						(i32.ge_s (local.get $xb1) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 1))) (i32.const 2)))
+						(i32.ge_s (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)));;(i32.const -640))
+						(i32.ge_s (local.get $xb1) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)))
 				(i32.or)
-						(i32.ge_s (local.get $yb0) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 5))) (i32.const 2)));;(i32.const -360)
-						(i32.ge_s (local.get $yb1) (i32.div_s (i32.mul (i32.const -1) (call $bignum (i32.const 5))) (i32.const 2)))
+						(i32.ge_s (local.get $yb0) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 5))) (i32.const 2)));;(i32.const -360)
+						(i32.ge_s (local.get $yb1) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 5))) (i32.const 2)))
 				(i32.or)
 			(i32.or)
-						(i32.lt_s (local.get $xb0) (i32.div_s (call $bignum (i32.const 1)) (i32.const 2)));;i32.const 640
-						(i32.lt_s (local.get $xb1) (i32.div_s (call $bignum (i32.const 1)) (i32.const 2)))
+						(i32.lt_s (local.get $xb0) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)));;i32.const 640
+						(i32.lt_s (local.get $xb1) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)))
 				(i32.or)
-						(i32.lt_s (local.get $yb0) (i32.div_s (call $bignum (i32.const 5)) (i32.const 2)));;i32.const 360
-						(i32.lt_s (local.get $yb1) (i32.div_s (call $bignum (i32.const 5)) (i32.const 2)))
+						(i32.lt_s (local.get $yb0) (i32.div_s (i32.load (i32.const 5)) (i32.const 2)));;i32.const 360
+						(i32.lt_s (local.get $yb1) (i32.div_s (i32.load (i32.const 5)) (i32.const 2)))
 				(i32.or)
 			(i32.or)
 		(i32.or)
@@ -512,7 +346,19 @@
 
 		(if	  ;;the start of the main
 		(then ;;if block
-			;; (local.set $i (f64.convert_i32_s (local.get $xb0)))
+
+			;;START evaluate area of triangle
+				;;magnitude((vector0->1) cross (vector0->2))
+					
+					
+
+				;; 	(f64.mul)
+				;; 		(f64.mul)
+				;; 		(f64.mul)
+				;; 	(f64.add)
+				;; (f64.add)
+			;;END evaluate area of triangle
+
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block
 			(loop ;;loop through the x bounds of the projected triangle
