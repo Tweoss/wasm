@@ -121,8 +121,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	function redraw(){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
-		results.instance.exports.trishade(21,0,0,21,0,341,21,321,0,color);
-		results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
+		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
+		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
 
 		let j = 0;

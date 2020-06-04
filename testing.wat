@@ -336,7 +336,7 @@
 						(i32.const 2)
 					(i32.div_u)
 					(local.get $x)
-				(i32.add)
+				(i32.sub)
 							(call $bignum (i32.const 5))
 							(i32.const 2)
 						(i32.div_u)
@@ -740,7 +740,7 @@
 		(then ;;if block
 
 			;;START calculates area of entire triangle
-				
+
 			;;END	caluculates area of entire triangle
 
 
