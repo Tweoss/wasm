@@ -126,9 +126,9 @@
 	;;project of c*(xyz-view) onto (viewup cross viewdir)/mag(viewup cross viewdir)
 	;;(c*(xyz-view) dot (viewup cross viewdir))/mag(viewup cross viewdir)
 
-;; i j k
-;; x y z
-;; x y z
+	;; i j k
+	;; x y z
+	;; x y z
 
 
 						(local.get $x)
