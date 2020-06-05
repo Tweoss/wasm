@@ -404,25 +404,31 @@
 	;;END	LOCAL DECLARATION
 
 	;;START	PROJECTION EVALUATION
-		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
-		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
-		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
-		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
-		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
-		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
+		;; (local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
+		;; (call $log)
+		;; (local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
+		;; (call $log)
+		;; (local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
+		;; (call $log)
+		;; (local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
+		;; (call $log)
+		;; (local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
+		;; (call $log)
+		;; (local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
+		;; (call $log)
 
-		;; (local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
+		(local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (f64.mul (f64.const -1) (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(call $log)
+		(local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
+		(local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (f64.mul (f64.const -1) (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(call $log)
+		(local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
+		(local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (f64.mul (f64.const -1) (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(call $log)
+		(local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(call $log)
 	;;END	PROJECTION EVALUATION
 
 	;;START Counterclockwise EDGE TRUTH EVALUATION
@@ -583,7 +589,6 @@
 
 		(if	  ;;the start of the main
 		(then ;;if block
-
 			;;START evaluate area of triangle
 				;;magnitude((vector0->1) cross (vector0->2))
 					

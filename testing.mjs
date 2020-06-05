@@ -105,7 +105,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[7] = canvas.height>>>16&255;
 	heap[8] = canvas.height>>>24&255;
 	
-	// results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
+	results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
 	results.instance.exports.trishade(21,321,21,21,321,0,21,0,321,color);
 
 	for (var i = 0+offset; i < data.length+offset; i += 4) {
@@ -140,7 +140,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}
-redraw();
+// redraw();
 
 
 
