@@ -88,11 +88,11 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	//	9-25	- intermediate calcs
 	
 	//	offset	- triangle
-	//	0 -31	- little endian
-	//	32-95	- z buffer
+	//	0 -3	- little endian
+	//	4-19	- z buffer
 
 	//	offset is the largest number from heap information + 1
-	//	offset is one byte, so max is 255
+	//	offset is one byte, so max offset is 255
 	var offset = 26;
 	heap[0] = offset;
 	resized();
@@ -140,7 +140,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}
-// redraw();
+redraw();
 
 
 

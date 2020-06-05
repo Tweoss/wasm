@@ -73,15 +73,6 @@
 	(i32.add)
 )
 
-;;takes the 3d coords and pushes to stack the 2d canvas coords
-;;assumes viewer at 0,0,0 and plane at x = 10 and object is in front of plane
-(func $proj (export "proj") (param $x f64) (param $yz f64) (result f64)
-	(local.get $yz)
-	(local.get $x)
-	(f64.div)
-	(f64.const 10)
-	(f64.mul)
-)
 
 (func $newprojx (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewupx f64) (param $viewupy f64) (param $viewupz f64) (result f64)
 	(local $c f64)
@@ -295,19 +286,6 @@
 	(f64.div)
 )
 
-;;normalizes the canvas coords based on the size (assumes a 1280,720)
-(func $normx (export "normx") (param $x f64) (result f64)
-	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 1)) (i32.const 2)))
-	(local.get $x)
-	(f64.sub)
-)
-(func $normy (export "normy") (param $y f64) (result f64)
-	;; (f64.const 360)
-	(f64.convert_i32_u (i32.div_u (call $bignum (i32.const 5)) (i32.const 2)))
-	(local.get $y)
-	(f64.sub)
-)
-
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
@@ -326,7 +304,7 @@
 					(i32.load (i32.const 1))
 				(i32.mul)
 			)
-			(i32.const 4)
+			(i32.const 4) ;;however many bytes is taken by each pixel
 		(i32.mul)
 		(i32.load8_u (i32.const 0))
 	(i32.add)
@@ -343,16 +321,15 @@
 	(i32.and)
 
 	(if
-		(then
-				(local.get $x)
-				(local.get $y)
-			(call $mem)
-			(local.get $color)
-			(i32.store)
-		)
-
+	(then
+			(local.get $x)
+			(local.get $y)
+		(call $mem)
+		(local.get $color)
+		(i32.store)
 	)
 
+	)
 )
 
 (func $increment (param $x f64) (result f64)
@@ -360,8 +337,6 @@
 		(f64.const 1)
 	(f64.add)
 )
-
-
 
 ;; assumes 1280, 720
 (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32)
@@ -388,14 +363,14 @@
 		(local $xc2 f64)
 		(local $yc2 f64)
 		(local $xb0 i32);;	bounding box (rounded)
-		(local $yb0 i32);; (signed)
+		(local $yb0 i32);;	(signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
 		(local $tri f64);;	area of the triangle
 		(local $var f64);;	temporary var preventing reevaluation for squaring
-		(local $e01 i32);;	validity t/f of edges (top left rule)
-		(local $e12 i32);;	(binary)
-		(local $e20 i32)
+		(local $e01 f64);;	validity t/f of edges (top left rule)
+		(local $e12 f64);;	(binary)
+		(local $e20 f64)
 		(local $i01 i32);;	t/f the point is on the 
 		(local $i12 i32);;	edge
 		(local $i20 i32)
@@ -404,25 +379,12 @@
 	;;END	LOCAL DECLARATION
 
 	;;START	PROJECTION EVALUATION
-		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $proj (local.get $x0) (local.get $y0)))))
-		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $proj (local.get $x0) (local.get $z0)))))
-		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $proj (local.get $x1) (local.get $y1)))))
-		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $proj (local.get $x1) (local.get $z1)))))
-		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $proj (local.get $x2) (local.get $y2)))))
-		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $proj (local.get $x2) (local.get $z2)))))
-
-		;; (local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
-		;; (local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		;; (call $log)
+		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (f64.mul (f64.const -1) (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (f64.mul (f64.const -1) (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (f64.mul (f64.const -1) (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
 	;;END	PROJECTION EVALUATION
 
 	;;START Counterclockwise EDGE TRUTH EVALUATION
@@ -444,23 +406,23 @@
 		(f64.gt)
 		(if
 		(then
-			(local.set $e01 (i32.const 1))
+			(local.set $e01 (f64.const 1))
 				(local.get $yc2) ;;next vertex
 				(local.get $yc1) ;;prev vertex
 			(f64.gt)
 			(if
 			(then
-				(local.set $e12 (i32.const 1))
-				(local.set $e20 (i32.const 0))
+				(local.set $e12 (f64.const 1))
+				(local.set $e20 (f64.const 0))
 			)
 			(else
-				(local.set $e12 (i32.const 0))
+				(local.set $e12 (f64.const 0))
 					(local.get $yc1) ;;next vertex
 					(local.get $yc0) ;;prev vertex
 				(f64.gt)
 				(if
 				(then
-					(local.set $e20 (i32.const 1))
+					(local.set $e20 (f64.const 1))
 				)
 				(else
 							(local.get $yc0) ;;next
@@ -472,10 +434,10 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e20 (i32.const 1))
+						(local.set $e20 (f64.const 1))
 					)
 					(else
-						(local.set $e20 (i32.const 0))
+						(local.set $e20 (f64.const 0))
 					)
 					)
 				)
@@ -493,12 +455,12 @@
 			(i32.and)
 			(if
 			(then
-				(local.set $e01 (i32.const 1))
-				(local.set $e12 (i32.const 1))
-				(local.set $e20 (i32.const 0))
+				(local.set $e01 (f64.const 1))
+				(local.set $e12 (f64.const 1))
+				(local.set $e20 (f64.const 0))
 			)
 			(else
-				(local.set $e01 (i32.const 0))
+				(local.set $e01 (f64.const 0))
 						(local.get $yc2) ;;next
 						(local.get $yc1) ;;prev
 					(f64.eq)
@@ -508,7 +470,7 @@
 				(i32.and)
 				(if
 				(then
-					(local.set $e12 (i32.const 1))
+					(local.set $e12 (f64.const 1))
 							(local.get $yc0) ;;next
 							(local.get $yc2) ;;prev
 						(f64.eq)
@@ -518,10 +480,10 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e20 (i32.const 1))
+						(local.set $e20 (f64.const 1))
 					)
 					(else
-						(local.set $e20 (i32.const 0))
+						(local.set $e20 (f64.const 0))
 					)
 					)
 				)
@@ -535,12 +497,12 @@
 					(i32.and)
 					(if
 					(then
-						(local.set $e12 (i32.const 1))
-						(local.set $e20 (i32.const 1))
+						(local.set $e12 (f64.const 1))
+						(local.set $e20 (f64.const 1))
 					)
 					(else
-						(local.set $e12 (i32.const 0))
-						(local.set $e20 (i32.const 1))
+						(local.set $e12 (f64.const 0))
+						(local.set $e20 (f64.const 1))
 					)
 					)
 				)
@@ -579,22 +541,40 @@
 		(i32.or)
 
 
-		;;;; ALL COORDS ARE NOT NORMALIZED (yet?)
+		;;;; ALL COORDS ARE NORMALIZED THROUGH $MEM AND PROJECTION
 
 		(if	  ;;the start of the main
 		(then ;;if block
 
-			;;START evaluate area of triangle
-				;;magnitude((vector0->1) cross (vector0->2))
-					
-					
+			;;START evaluate area of triangle * 2
+				;;		i		j		k
+				;;	xc1-xc0	yc1-yc0		0
+				;;	xc2-xc0	yc2-yc0		0
 
-				;; 	(f64.mul)
-				;; 		(f64.mul)
-				;; 		(f64.mul)
-				;; 	(f64.add)
-				;; (f64.add)
-			;;END evaluate area of triangle
+				;; (xc1-xc0)*(yc2-yc0)-(xc2-xc0)*(yc1-yc0)
+					
+								(local.get $xc1)
+								(local.get $xc0)
+							(f64.sub)
+								(local.get $yc2)
+								(local.get $yc0)
+							(f64.sub)
+						(f64.mul)
+								(local.get $xc2)
+								(local.get $xc0)
+							(f64.sub)
+								(local.get $yc1)
+								(local.get $yc0)
+							(f64.sub)
+						(f64.mul)
+					(f64.sub)
+				(local.set $tri)
+			;;END evaluate area of triangle * 2
+
+			;;START evaluate dist to each vertex
+				
+			;;END	 evaluate dist to each vertex
+
 
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block
@@ -649,10 +629,9 @@
 										(f64.sub)
 									(f64.mul)
 								(f64.sub)
-								(i32.trunc_f64_s)
 								(local.tee $e12)
-								(i32.const 0)
-							(i32.gt_s)
+								(f64.const 0)
+							(f64.gt)
 							(if		;;if the point is in
 							(then	;;the v1-v2 boundary
 												(local.get $i) ;;P.x
@@ -670,10 +649,9 @@
 											(f64.sub)
 										(f64.mul)
 									(f64.sub)
-									(i32.trunc_f64_s)
 									(local.tee $e20)
-									(i32.const 0)
-								(i32.gt_s)
+									(f64.const 0)
+								(f64.gt)
 								(if		;;if the point is in
 								(then	;;the v2-v0 boundary			
 									(call $pshade
@@ -685,11 +663,11 @@
 								(else	;;if the point is not inside any boundary
 									(if (i32.eqz (local.get $i01))
 									(then
-										(if (local.get $e01)
+										(if (i32.trunc_f64_s (local.get $e01))
 										(then
 											(if (i32.eqz (local.get $i12))
 											(then
-												(if (local.get $e12)
+												(if (i32.trunc_f64_s (local.get $e12))
 													(call $pshade
 														(i32.trunc_f64_s (local.get $i))
 														(i32.trunc_f64_s (local.get $j))
@@ -700,7 +678,7 @@
 											(else
 												(if (i32.eqz (local.get $i20))
 												(then
-													(if (local.get $e20)
+													(if (i32.trunc_f64_s (local.get $e20))
 														(call $pshade
 															(i32.trunc_f64_s (local.get $i))
 															(i32.trunc_f64_s (local.get $j))
@@ -725,11 +703,11 @@
 									(else
 										(if (i32.eqz (local.get $i12))
 										(then
-											(if (local.get $e12)
+											(if (i32.trunc_f64_s (local.get $e12))
 											(then
 												(if (i32.eqz (local.get $i20))
 												(then
-													(if (local.get $e20)
+													(if (i32.trunc_f64_s (local.get $e20))
 													(then
 														(call $pshade
 															(i32.trunc_f64_s (local.get $i))
@@ -753,7 +731,7 @@
 										(else
 											(if (i32.eqz (local.get $i20))
 											(then
-												(if (local.get $e20)
+												(if (i32.trunc_f64_s (local.get $e20))
 												(then
 													(call $pshade
 														(i32.trunc_f64_s (local.get $i))
