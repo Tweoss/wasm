@@ -74,14 +74,12 @@
 )
 
 
-(func $newprojx (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewupx f64) (param $viewupy f64) (param $viewupz f64) (result f64)
+(func $projx (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewupx f64) (param $viewupy f64) (param $viewupz f64) (result f64)
 	(local $c f64)
 	;;solve for c
 	;;viewdir dotted with (viewdir-c*(xyz-view)) = 0
 	;;c * (viewdir dot (xyz-view)) = mag(viewdir)^2
 	;;c = mag(viewdir)^2/(viewdir dot (xyz-view))
-	;;21,321,21,;;21,321,0,21,0,321
-	;;c = (10)/(210) (matches)
 						(local.get $viewdirx)
 						(local.get $viewdirx)
 					(f64.mul)
@@ -112,7 +110,7 @@
 				(f64.add)
 		(f64.div)
 	(local.set $c)
-	(f64.store (i32.const 9) (local.get $c))
+	(f64.store (i32.const 81) (local.get $c))
 	;;to get the x value of canvas
 	;;project of c*(xyz-view) onto (viewup cross viewdir)/mag(viewup cross viewdir)
 	;;(c*(xyz-view) dot (viewup cross viewdir))/mag(viewup cross viewdir)
@@ -211,44 +209,13 @@
 
 )
 
-(func $newprojy (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewupx f64) (param $viewupy f64) (param $viewupz f64) (result f64)
+(func $projy (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewupx f64) (param $viewupy f64) (param $viewupz f64) (result f64)
 	(local $c f64)
 	;;solve for c
 	;;viewdir dotted with (viewdir-c*(xyz-view)) = 0
 	;;c * (viewdir dot (xyz-view)) = mag(viewdir)^2
 	;;c = mag(viewdir)^2/(viewdir dot (xyz-view))
-
-					(local.get $viewdirx)
-					(local.get $viewdirx)
-				(f64.mul)
-						(local.get $viewdiry)
-						(local.get $viewdiry)
-					(f64.mul)
-						(local.get $viewdirz)
-						(local.get $viewdirz)
-					(f64.mul)
-				(f64.add)
-			(f64.add)
-					(local.get $viewdirx)
-						(local.get $x)
-						(local.get $viewx)
-					(f64.sub)
-				(f64.mul)
-						(local.get $viewdiry)
-							(local.get $y)
-							(local.get $viewy)
-						(f64.sub)
-					(f64.mul)
-						(local.get $viewdirz)
-							(local.get $z)
-							(local.get $viewz)
-						(f64.sub)
-					(f64.mul)
-				(f64.add)
-			(f64.add)
-		(f64.div)
-	(local.set $c)
-	(f64.store (i32.const 9) (local.get $c))
+	(local.set $c (f64.load (i32.const 81)))
 
 	;;project c*(xyz-view) onto viewup to get the y value of canvas
 	;;so we want (c*(xyz-view) dot viewup)/mag(viewup)
@@ -290,7 +257,39 @@
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
 (func $mem (export "mem") (param $x i32) (param $y i32) (result i32)
-			(i32.add
+			
+			;; (call $log (local.get $x))
+			;; (call $log (local.get $y))
+			;; 		(i32.load (i32.const 1))
+			;; 		(i32.const 2)
+			;; 	(i32.div_u)
+			;; 	(local.get $x)
+			;; (i32.sub)
+			;; (call $log)
+			;; 		(i32.load (i32.const 5))
+			;; 		(i32.const 2)
+			;; 	(i32.div_u)
+			;; 	(local.get $y)
+			;; (i32.sub)
+			;; (call $log)
+			;; 					(i32.load (i32.const 1))
+			;; 					(i32.const 2)
+			;; 				(i32.div_u)
+			;; 				(local.get $x)
+			;; 			(i32.sub)
+			;; 						(i32.load (i32.const 5))
+			;; 						(i32.const 2)
+			;; 					(i32.div_u)
+			;; 					(local.get $y)
+			;; 				(i32.sub)
+			;; 				(i32.load (i32.const 1))
+			;; 			(i32.mul)
+			;; 		(i32.add)
+			;; 		(i32.const 4) ;;however many bytes is taken by each pixel
+			;; 	(i32.mul)
+			;; 	(i32.load8_u (i32.const 0))
+			;; (i32.add)
+			;; (call $log)
 						(i32.load (i32.const 1))
 						(i32.const 2)
 					(i32.div_u)
@@ -303,7 +302,7 @@
 					(i32.sub)
 					(i32.load (i32.const 1))
 				(i32.mul)
-			)
+			(i32.add)
 			(i32.const 4) ;;however many bytes is taken by each pixel
 		(i32.mul)
 		(i32.load8_u (i32.const 0))
@@ -367,6 +366,9 @@
 		(local $xb1 i32)
 		(local $yb1 i32)
 		(local $tri f64);;	area of the triangle
+		(local $dt0 f64);;	distance to vertices
+		(local $dt1 f64)
+		(local $dt2 f64)
 		(local $var f64);;	temporary var preventing reevaluation for squaring
 		(local $e01 f64);;	validity t/f of edges (top left rule)
 		(local $e12 f64);;	(binary)
@@ -379,12 +381,12 @@
 	;;END	LOCAL DECLARATION
 
 	;;START	PROJECTION EVALUATION
-		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (f64.mul (f64.const -1) (call $newprojx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
-		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $newprojy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (f64.mul (f64.const -1) (call $newprojx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
-		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $newprojy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
-		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (f64.mul (f64.const -1) (call $newprojx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
-		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $newprojy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (f64.mul (f64.const -1) (call $projx (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $projy (local.get $x0) (local.get $y0) (local.get $z0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (f64.mul (f64.const -1) (call $projx (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $projy (local.get $x1) (local.get $y1) (local.get $z1) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
+		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (f64.mul (f64.const -1) (call $projx (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) )))))
+		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $projy (local.get $x2) (local.get $y2) (local.get $z2) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 10) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 0) (f64.const 1) ))))
 	;;END	PROJECTION EVALUATION
 
 	;;START Counterclockwise EDGE TRUTH EVALUATION
@@ -572,8 +574,8 @@
 			;;END evaluate area of triangle * 2
 
 			;;START evaluate dist to each vertex
-				
-			;;END	 evaluate dist to each vertex
+				;; (f64.load (i32.const ))
+			;;END	evaluate dist to each vertex
 
 
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
