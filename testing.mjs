@@ -47,8 +47,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		else if (canvas.width < 1280/720*canvas.height){
 			canvas.height = 720/1280*canvas.width;
 		}
-		store(canvas.width,4,1,heap);	
-		store(canvas.height,4,5,heap);	
+		results.instance.exports.storei(canvas.width,1);
+		results.instance.exports.storei(canvas.height,5);
 }
 
 	function store(num, sizeInBytes, location, heap) {
@@ -89,16 +89,16 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	heap[0] = offset;
 	resized();
 	results.instance.exports.storei(canvas.width,1);
-	store(canvas.height,4,5,heap);
-	store(viewpoint.x,8,9,heap);
-	store(viewpoint.y,8,17,heap);
-	store(viewpoint.z,8,25,heap);
-	store(viewup.x,8,33,heap);
-	store(viewup.y,8,41,heap);
-	store(viewup.z,8,49,heap);
-	store(viewdir.x,8,57,heap);
-	store(viewdir.y,8,65,heap);
-	store(viewdir.z,8,73,heap);
+	results.instance.exports.storei(canvas.height,5);
+	results.instance.exports.storef(viewpoint.x,9);
+	results.instance.exports.storef(viewpoint.y,17);
+	results.instance.exports.storef(viewpoint.z,25);
+	results.instance.exports.storef(viewdir.x,33);
+	results.instance.exports.storef(viewdir.y,41);
+	results.instance.exports.storef(viewdir.z,49);
+	results.instance.exports.storef(viewup.x,57);
+	results.instance.exports.storef(viewup.y,65);
+	results.instance.exports.storef(viewup.z,73);
 
 	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	var data=imageData.data;
