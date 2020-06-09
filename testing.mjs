@@ -56,10 +56,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		for (i=0;i<sizeInBytes;i++){
 			heap[location+i] = num>>>(i*8) & 255;
 		}
+		if (sizeInBytes == 8) {
+			if (num < 0){
+
+			}
+		}
 	}
 	
-	var color;
-	color = parseInt("D62A26FF",16);
+	//VARIABLES
+	var color = parseInt("D62A26FF",16);
 	var viewpoint 	= {x: 0, y: 0, z: 0};
 	var viewup 		= {x: 0, y: 0, z: 1};
 	var viewdir 	= {x:10, y: 0, z: 0};
@@ -83,7 +88,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var offset = 90;
 	heap[0] = offset;
 	resized();
-	store(canvas.width,4,1,heap);
+	results.instance.exports.storei(canvas.width,1);
 	store(canvas.height,4,5,heap);
 	store(viewpoint.x,8,9,heap);
 	store(viewpoint.y,8,17,heap);
@@ -115,18 +120,16 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
-		let memfail = 0;
 		for (var i = 0+offset; i < data.length+offset; i += 4) {
 			data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
 			data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
 			data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
 			data[i + 3 	- offset] = heap[i];     //255;               //alpha
 		}
-		console.log(i);
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}
-	redraw();
+	// redraw();
 
 	
 });

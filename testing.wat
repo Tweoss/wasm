@@ -3,11 +3,6 @@
 (import "env" "log" (func $log (param i32)))
 (import "env" "log" (func $logf (param f64)))
 
-(func $_reverse (param i32) (param i32)
-	(i32.store (i32.const 1) (i32.const 256))
-)
-(export "_reverse" (func $_reverse))
-
 ;;takes two numbers and avgs them, f64 encodes with 11 bit exponent and 52 bit mantissa
 (func $avg (param $num1 f64) (param $num2 f64) (result f64)
 	(f64.add
@@ -19,7 +14,7 @@
 )
 
 ;;takes three args and returns the min
-(func $min (export "min") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
+(func $min (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $min i32)
 		(local.get $n2)
 				(local.get $n1)
@@ -46,7 +41,7 @@
 	(i32.add)
 )
 ;;takes three args and returns the max
-(func $max (export "max") (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
+(func $max (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
 	(local $max i32)
 		(local.get $n2)
 				(local.get $n1)
@@ -256,40 +251,7 @@
 
 ;;returns the one dimensional array pointer from 2d canvas coords
 ;;(assumes 1280,720)
-(func $mem (export "mem") (param $x i32) (param $y i32) (result i32)
-			
-			;; (call $log (local.get $x))
-			;; (call $log (local.get $y))
-			;; 		(i32.load (i32.const 1))
-			;; 		(i32.const 2)
-			;; 	(i32.div_u)
-			;; 	(local.get $x)
-			;; (i32.sub)
-			;; (call $log)
-			;; 		(i32.load (i32.const 5))
-			;; 		(i32.const 2)
-			;; 	(i32.div_u)
-			;; 	(local.get $y)
-			;; (i32.sub)
-			;; (call $log)
-			;; 					(i32.load (i32.const 1))
-			;; 					(i32.const 2)
-			;; 				(i32.div_u)
-			;; 				(local.get $x)
-			;; 			(i32.sub)
-			;; 						(i32.load (i32.const 5))
-			;; 						(i32.const 2)
-			;; 					(i32.div_u)
-			;; 					(local.get $y)
-			;; 				(i32.sub)
-			;; 				(i32.load (i32.const 1))
-			;; 			(i32.mul)
-			;; 		(i32.add)
-			;; 		(i32.const 4) ;;however many bytes is taken by each pixel
-			;; 	(i32.mul)
-			;; 	(i32.load8_u (i32.const 0))
-			;; (i32.add)
-			;; (call $log)
+(func $mem (param $x i32) (param $y i32) (result i32)
 						(i32.load (i32.const 1))
 						(i32.const 2)
 					(i32.div_u)
@@ -337,6 +299,13 @@
 	(f64.add)
 )
 
+(func $storef (export "storef") (param $number f64) (param $offset i32)
+	(f64.store (local.get $offset) (local.get $number))
+)
+(func $storei (export "storei") (param $number i32) (param $offset i32)
+	(i32.store (local.get $offset) (local.get $number))
+)
+
 ;; assumes 1280, 720
 (func (export "main") (param $x f64) (param $y f64) (param $z f64) (param $color i32)
 
@@ -365,6 +334,15 @@
 		(local $yb0 i32);;	(signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
+		(local $viewpx f64);; viewpoint x coord
+		(local $viewpy f64)
+		(local $viewpz f64)
+		(local $viewux f64);; view up x cooord
+		(local $viewuy f64)
+		(local $viewuz f64)
+		(local $viewdx f64);; viewdirection x coord
+		(local $viewdy f64)
+		(local $viewdz f64)
 		(local $tri f64);;	area of the triangle
 		(local $dt0 f64);;	distance to vertices
 		(local $dt1 f64)
@@ -572,7 +550,7 @@
 					(f64.sub)
 				(local.set $tri)
 			;;END evaluate area of triangle * 2
-
+				;; ()
 			;;START evaluate dist to each vertex
 				;; (f64.load (i32.const ))
 			;;END	evaluate dist to each vertex
