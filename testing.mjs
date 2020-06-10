@@ -68,6 +68,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var viewpoint 	= {x: 0, y: 0, z: 0};
 	var viewup 		= {x: 0, y: 0, z: 1};
 	var viewdir 	= {x:10, y: 0, z: 0};
+	var offset = 90;
+	var period = 12;
 
 
 	//HEAP INFORMATION
@@ -85,7 +87,6 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 
 	//	offset is the largest number from heap information + 1
 	//	offset is one byte, so max offset is 255
-	var offset = 90;
 	heap[0] = offset;
 	resized();
 	results.instance.exports.storei(canvas.width,1);
@@ -120,7 +121,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
-		for (var i = 0+offset; i < data.length+offset; i += 4) {
+		for (var i = 0+offset; i < data.length+offset; i += period) {
 			data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
 			data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
 			data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
