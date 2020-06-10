@@ -333,7 +333,7 @@
 					(i32.add)
 				(f64.load)
 				(local.get $zdepth)
-			(f64.gt)
+			(f64.lt)
 						(local.get $memloc)
 						(i32.const 4)
 					(i32.add)

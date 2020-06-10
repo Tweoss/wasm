@@ -4,9 +4,17 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
+var wDown = 0;
+var aDown = 0;
+var sDown = 0;
+var dDown = 0;
+var shiftDown = 0;
+var spaceDown = 0;
+
+
 function consoleLogOne(log) {
 	console.log(log);
-  }
+}
 
 
 const memory = new WebAssembly.Memory({
@@ -30,13 +38,53 @@ ctx.imageSmoothingEnabled = false;
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
 
-
+// canvas.requestPointerLock = canvas.requestPointerLock;
+// canvas.requestPointerLock();
 
 WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
 	
-	window.addEventListener('resize', resized);
+	canvas.addEventListener('click', function(event) {
+			canvas.requestPointerLock = canvas.requestPointerLock ||
+					 canvas.mozRequestPointerLock ||
+					 canvas.webkitRequestPointerLock;
+			// Ask the browser to lock the pointer
+			canvas.requestPointerLock();
+	})
 
+// /*// Ask the browser to release the pointer
+// document.exitPointerLock = document.exitPointerLock ||
+// 			   document.mozExitPointerLock ||
+// 			   document.webkitExitPointerLock;
+// document.exitPointerLock();
+	
+	window.addEventListener('keydown', function(event) {
+		// alert(event.key   + ' was pressed');
+		if (event.key === 'Shift') {
+			viewpoint.x -= viewup.x
+			viewpoint.y -= viewup.y
+			viewpoint.z -= viewup.z
+		}
+		else if (event.key === ' ') {
+			viewpoint.x += viewup.x
+			viewpoint.y += viewup.y
+			viewpoint.z += viewup.z
+		}
+		else if (event.key === 'd') {
+			viewpoint.y--;
+		}
+		reView();
+		
+		
+		/*
+		a - 65
+		d - 68
+		w - 87
+		s - 83
+		*/
+	});
+
+	window.addEventListener('resize', resized);
 	function resized(e){
 		var canvas = document.getElementById('myCanvas');
 		canvas.width = window.innerWidth;
@@ -66,7 +114,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	//VARIABLES
 	var viewpoint 	= {x: 0, y: 0, z: 0};
 	var viewup 		= {x: 0, y: 0, z: 1};
-	var viewdir 	= {x:10, y: 0, z: 0};
+	var viewdir 	= {x:20, y: 0, z: 0};
+	var viewright	= {x: 0, y:-1, z: 0};
 	var offset = 90;
 	var period = 12;
 
@@ -90,6 +139,18 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	resized();
 	results.instance.exports.storei(canvas.width,1);
 	results.instance.exports.storei(canvas.height,5);
+	function reView(){
+		results.instance.exports.storef(viewpoint.x,9);
+		results.instance.exports.storef(viewpoint.y,17);
+		results.instance.exports.storef(viewpoint.z,25);
+		results.instance.exports.storef(viewdir.x,33);
+		results.instance.exports.storef(viewdir.y,41);
+		results.instance.exports.storef(viewdir.z,49);
+		results.instance.exports.storef(viewup.x,57);
+		results.instance.exports.storef(viewup.y,65);
+		results.instance.exports.storef(viewup.z,73);
+
+	}
 	results.instance.exports.storef(viewpoint.x,9);
 	results.instance.exports.storef(viewpoint.y,17);
 	results.instance.exports.storef(viewpoint.z,25);
@@ -103,15 +164,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	var data=imageData.data;
 	var color;
-	color = parseInt("D62A26FF",16);
-	results.instance.exports.trishade(10,10,10, 10,10,90, 10,90,90,color);
-	results.instance.exports.trishade(10,10,10, 10,90,90, 10,90,10,color);
-	color = parseInt("0F03E8FF",16);
-	results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
-	results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
-	color = parseInt("FF9800FF",16);
-	results.instance.exports.trishade(10,10,10, 10,10,90, 90,10,10,color);
-	results.instance.exports.trishade(10,10,90, 10,90,90, 90,10,10,color);
+	// color = parseInt("D62A26FF",16);
+	// results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
+	// results.instance.exports.trishade(05,10,10, 05,90,90, 05,90,10,color);
+	// color = parseInt("0F03E8FF",16);
+	// results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
+	// results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
+	// color = parseInt("FF9800FF",16);
+	// results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+	// results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
 
 
 	for (var i = 0; i < data.length; i += 4){
@@ -131,8 +192,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	function redraw(){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
-		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
-		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
+		color = parseInt("D62A26FF",16);
+		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
+		results.instance.exports.trishade(05,10,10, 05,90,90, 05,90,10,color);
+		color = parseInt("0F03E8FF",16);
+		results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
+		results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
+		color = parseInt("FF9800FF",16);
+		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
 
 		for (var i = 0; i < data.length; i += 4){
 			data[i]		= heap[i*period/4+offset+3];
@@ -150,7 +218,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}
-	// redraw();
+	redraw();
 
 	
 });
