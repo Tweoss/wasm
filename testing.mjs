@@ -64,7 +64,6 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	}
 	
 	//VARIABLES
-	var color = parseInt("D62A26FF",16);
 	var viewpoint 	= {x: 0, y: 0, z: 0};
 	var viewup 		= {x: 0, y: 0, z: 1};
 	var viewdir 	= {x:10, y: 0, z: 0};
@@ -103,16 +102,30 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 
 	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	var data=imageData.data;
-	
-	results.instance.exports.trishade(21,-10,0,21,0,321,21,321,0,color);
-	results.instance.exports.trishade(11,-20,21,-10,321,-30,21,0,321,color);
+	var color;
+	color = parseInt("D62A26FF",16);
+	results.instance.exports.trishade(10,10,10, 10,10,90, 10,90,90,color);
+	results.instance.exports.trishade(10,10,10, 10,90,90, 10,90,10,color);
+	color = parseInt("0F03E8FF",16);
+	results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
+	results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
+	color = parseInt("FF9800FF",16);
+	results.instance.exports.trishade(10,10,10, 10,10,90, 90,10,10,color);
+	results.instance.exports.trishade(10,10,90, 10,90,90, 90,10,10,color);
 
-	for (var i = 0+offset; i < data.length+offset; i += 4) {
-		data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
-		data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
-		data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
-		data[i + 3 	- offset] = heap[i]    ; //255;               //alpha
-		}
+
+	for (var i = 0; i < data.length; i += 4){
+		data[i]		= heap[i*period/4+offset+3];
+		data[i + 1]	= heap[i*period/4+offset+1];
+		data[i + 2]	= heap[i*period/4+offset+2];
+		data[i + 3]	= heap[i*period/4+offset];
+	}
+	// for (var i = 0+offset; i < data.length+offset; i += 4) {
+	// 	data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
+	// 	data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
+	// 	data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
+	// 	data[i + 3 	- offset] = heap[i]    ; //255;               //alpha
+	// }
 	ctx.putImageData(imageData, 0, 0);
 
 	function redraw(){
@@ -121,12 +134,19 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		results.instance.exports.trishade(21,0,0,21,0,321,21,321,0,color);
 		// results.instance.exports.trishade(21,321,0,21,0,321,21,321,321,color);
 
-		for (var i = 0+offset; i < data.length+offset; i += period) {
-			data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
-			data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
-			data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
-			data[i + 3 	- offset] = heap[i];     //255;               //alpha
+		for (var i = 0; i < data.length; i += 4){
+			data[i]		= heap[i*period/4+offset+3];
+			data[i + 1]	= heap[i*period/4+offset+1];
+			data[i + 2]	= heap[i*period/4+offset+2];
+			data[i + 3]	= heap[i*period/4+offset];
 		}
+
+		// for (var i = offset; i < data.length*3+offset; i += period) {
+		// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
+		// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
+		// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
+		// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
+		// }
 		ctx.putImageData(imageData, 0, 0);
 		requestAnimationFrame(redraw);	
 	}

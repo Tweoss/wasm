@@ -265,7 +265,7 @@
 					(i32.load (i32.const 1))
 				(i32.mul)
 			(i32.add)
-			(i32.const 4) ;;however many bytes is taken by each pixel
+			(i32.const 12) ;;however many bytes is taken by each pixel
 		(i32.mul)
 		(i32.load8_u (i32.const 0))
 	(i32.add)
@@ -343,6 +343,14 @@
 		(i32.or)
 		(if
 		(then
+
+							;; 	(local.get $x)
+							;; 	(local.get $y)
+							;; (call $mem)
+							;; (local.get $color)
+							;; (i32.store)
+
+
 				(local.get $memloc)
 				(local.get $color)
 			(i32.store)
