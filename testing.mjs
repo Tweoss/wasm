@@ -18,8 +18,8 @@ function consoleLogOne(log) {
 
 
 const memory = new WebAssembly.Memory({
-	initial: 203,//for my monitor
-	maximum: 256
+	initial: 256+128-64-32+16,//for my monitor
+	maximum: 512
 });
 const heap = new Uint8Array(memory.buffer);
 const imports = {
@@ -116,7 +116,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var viewup 		= {x: 0, y: 0, z: 1};
 	var viewdir 	= {x:20, y: 0, z: 0};
 	var viewright	= {x: 0, y:-1, z: 0};
-	var offset = 90;
+	var offset = 106;
 	var period = 12;
 
 
@@ -127,7 +127,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	//	9-32	- viewpointx,y,z
 	//	33-56	- viewupx,y,z
 	//	57-80	- viewdirx,y,z
-	//	81-89	- intermediate calcs
+	//	81-97	- viewdirx,y,z
+	//	97-105	- intermediate calcs
 
 	//	offset	- triangle
 	//	0-3	- little endian
@@ -149,7 +150,9 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		results.instance.exports.storef(viewup.x,57);
 		results.instance.exports.storef(viewup.y,65);
 		results.instance.exports.storef(viewup.z,73);
-
+		results.instance.exports.storef(viewright.x,81);
+		results.instance.exports.storef(viewright.y,89);
+		results.instance.exports.storef(viewright.z,97);
 	}
 	results.instance.exports.storef(viewpoint.x,9);
 	results.instance.exports.storef(viewpoint.y,17);
@@ -160,6 +163,9 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	results.instance.exports.storef(viewup.x,57);
 	results.instance.exports.storef(viewup.y,65);
 	results.instance.exports.storef(viewup.z,73);
+	results.instance.exports.storef(viewright.x,81);
+	results.instance.exports.storef(viewright.y,89);
+	results.instance.exports.storef(viewright.z,97);
 
 	var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	var data=imageData.data;
@@ -190,7 +196,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	ctx.putImageData(imageData, 0, 0);
 
 	function redraw(){
-		ctx.clearRect(0,0,canvas.width,canvas.height);
+		// ctx.clearRect(0,0,canvas.width,canvas.height);
 		heap.fill(0,offset);
 		color = parseInt("D62A26FF",16);
 		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
