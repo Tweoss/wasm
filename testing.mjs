@@ -4,6 +4,7 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
+var logging = false;
 
 function consoleLogOne(log) {
 	console.log(log);
@@ -27,21 +28,22 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 var ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false;
+// ctx.imageSmoothingEnabled = false;
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
-
-// canvas.requestPointerLock = canvas.requestPointerLock;
-// canvas.requestPointerLock();
 
 WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
 	
 	//VARIABLES
-	var viewpoint 	= {x: 0, y: 0, z:201};
-	var viewup 		= {x: 0, y: 0, z: 1};
-	var viewdir 	= {x:20, y: 0, z: 0};
-	var viewright	= {x: 0, y:-1, z: 0};
+	var viewpoint 	= {x:-15, y:-37, z: 98};
+	// var viewpoint 	= {x:  0, y:  0, z: 01};
+	var viewup 		= {x:  0, y:  0, z:  1};
+	var viewdir 	= {x:100, y:  0, z:  0};
+	var viewright	= {x:  0, y: -1, z:  0};
+	var viewndir	= {x:viewdir.x/Math.pow(viewdir.x*viewdir.x+viewdir.y*viewdir.y+viewdir.z*viewdir.z,.5),
+					   y:viewdir.y/Math.pow(viewdir.x*viewdir.x+viewdir.y*viewdir.y+viewdir.z*viewdir.z,.5), 
+					   z:viewdir.z/Math.pow(viewdir.x*viewdir.x+viewdir.y*viewdir.y+viewdir.z*viewdir.z,.5)}
 	var offset = 114;
 	var period = 12;
 	var keyDownFlags = [0,0,0,0,0,0];
@@ -57,15 +59,9 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	window.addEventListener('keydown', function(event) {
 		if (event.key === 'Shift') {
 			keyDownFlags[0] = 1;
-			// viewpoint.x -= viewup.x
-			// viewpoint.y -= viewup.y
-			// viewpoint.z -= viewup.z
 		}
 		else if (event.key === ' ') {
 			keyDownFlags[1] = 1;
-			viewpoint.x += viewup.x
-			viewpoint.y += viewup.y
-			viewpoint.z += viewup.z
 		}
 		else if (event.key === 'w') {
 			keyDownFlags[2] = 1;
@@ -180,15 +176,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		data[i + 2]	= heap[i*period/4+offset+2];
 		data[i + 3]	= 255;
 	}
-	// for (var i = 0+offset; i < data.length+offset; i += 4) {
-	// 	data[i		- offset] = heap[i + 3]; //9   - data[i];     // red
-	// 	data[i + 1 	- offset] = heap[i + 2]; //255 - data[i + 1]; // green
-	// 	data[i + 2 	- offset] = heap[i + 1]; //255 - data[i + 2]; // blue
-	// 	data[i + 3 	- offset] = heap[i]    ; //255;               //alpha
-	// }
 	ctx.putImageData(imageData, 0, 0);
 
 	function redraw(){
+		logging&&console.time("WASM")
 		heap.fill(0,offset);
 		color = parseInt("D62A26FF",16);
 		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
@@ -199,50 +190,66 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		color = parseInt("FF9800FF",16);
 		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
 		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
-
+		color = parseInt("61D9F1FF",16);
+		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
+		logging&&console.timeEnd("WASM")
+		logging&&console.time("Copy to buffer")
 		for (var i = 0; i < data.length; i += 4){
 			data[i]		= heap[i*period/4+offset+3];
 			data[i + 1]	= heap[i*period/4+offset+1];
 			data[i + 2]	= heap[i*period/4+offset+2];
 			data[i + 3]	= 255;
 		}
-
+		logging&&console.timeEnd("Copy to buffer")
+		
 		if (keyDownFlags[0] == 1) {
-			viewpoint.x -= viewup.x
-			viewpoint.y -= viewup.y
-			viewpoint.z -= viewup.z
+			viewpoint.x -= viewup.x;
+			viewpoint.y -= viewup.y;
+			viewpoint.z -= viewup.z;
 		}
 		if (keyDownFlags[1] == 1) {
-			viewpoint.x += viewup.x
-			viewpoint.y += viewup.y
-			viewpoint.z += viewup.z
+			viewpoint.x += viewup.x;
+			viewpoint.y += viewup.y;
+			viewpoint.z += viewup.z;
 		}
 		if (keyDownFlags[2] == 1) {
-
+			viewpoint.x += viewndir.x;
+			viewpoint.y += viewndir.y;
+			viewpoint.z += viewndir.z;
 		}
 		if (keyDownFlags[3] == 1) {
-
+			viewpoint.x -= viewright.x;
+			viewpoint.y -= viewright.y;
+			viewpoint.z -= viewright.z;
 		}
 		if (keyDownFlags[4] == 1) {
-
+			viewpoint.x -= viewndir.x;
+			viewpoint.y -= viewndir.y;
+			viewpoint.z -= viewndir.z;
 		}
 		if (keyDownFlags[5] == 1) {
-
+			viewpoint.x += viewright.x;
+			viewpoint.y += viewright.y;
+			viewpoint.z += viewright.z;
 		}
 		reView();
-
+		
 		// for (var i = offset; i < data.length*3+offset; i += period) {
-		// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
-		// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
-		// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
-		// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
-		// }
-		ctx.putImageData(imageData, 0, 0);
-		// ctx.drawImage(imageData, 0, 0);
-		requestAnimationFrame(redraw);	
-	}
-	redraw();
-
+			// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
+			// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
+			// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
+			// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
+			// }
+			logging&&console.time("Copy to Canvas")
+			ctx.putImageData(imageData, 0, 0);
+			logging&&console.timeEnd("Copy to Canvas")
+			// ctx.drawImage(imageData, 0, 0);
+			requestAnimationFrame(redraw);	
+		}
+		redraw();
+		
+		
+	});
 	
-});
-
+	

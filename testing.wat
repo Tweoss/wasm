@@ -14,8 +14,8 @@
 )
 
 ;;takes three args and returns the min
-(func $min (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
-	(local $min i32)
+(func $min3 (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
+	(local $min3 i32)
 		(local.get $n2)
 				(local.get $n1)
 				(local.get $n2)
@@ -27,12 +27,12 @@
 			(i32.shr_s)
 		(i32.and)
 	(i32.add)
-	(local.set $min)
+	(local.set $min3)
 		(local.get $n3)
-				(local.get $min)
+				(local.get $min3)
 				(local.get $n3)
 			(i32.sub)
-					(local.get $min)
+					(local.get $min3)
 					(local.get $n3)
 				(i32.sub)
 				(i32.const 31)
@@ -40,9 +40,22 @@
 		(i32.and)
 	(i32.add)
 )
+(func $min2 (export "min2") (param $n1 i32) (param $n2 i32) (result i32)
+		(local.get $n2)
+				(local.get $n1)
+				(local.get $n2)
+			(i32.sub)
+					(local.get $n1)
+					(local.get $n2)
+				(i32.sub)
+				(i32.const 31)
+			(i32.shr_s)
+		(i32.and)
+	(i32.add)
+)
 ;;takes three args and returns the max
-(func $max (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
-	(local $max i32)
+(func $max3 (param $n1 i32) (param $n2 i32) (param $n3 i32) (result i32)
+	(local $max3 i32)
 		(local.get $n2)
 				(local.get $n1)
 				(local.get $n2)
@@ -54,13 +67,26 @@
 			(i32.shr_s)
 		(i32.and)
 	(i32.add)
-	(local.set $max)
+	(local.set $max3)
 		(local.get $n3)
-				(local.get $max)
+				(local.get $max3)
 				(local.get $n3)
 			(i32.sub)
 					(local.get $n3)
-					(local.get $max)
+					(local.get $max3)
+				(i32.sub)
+				(i32.const 31)
+			(i32.shr_s)
+		(i32.and)
+	(i32.add)
+)
+(func $max2 (export "max2") (param $n1 i32) (param $n2 i32) (result i32)
+		(local.get $n2)
+				(local.get $n1)
+				(local.get $n2)
+			(i32.sub)
+					(local.get $n2)
+					(local.get $n1)
 				(i32.sub)
 				(i32.const 31)
 			(i32.shr_s)
@@ -428,15 +454,6 @@
 		(local $yb0 i32);;	(signed)
 		(local $xb1 i32)
 		(local $yb1 i32)
-		;; (local $viewpx f64);; viewpoint x coord
-		;; (local $viewpy f64)
-		;; (local $viewpz f64)
-		;; (local $viewux f64);; view up x cooord
-		;; (local $viewuy f64)
-		;; (local $viewuz f64)
-		;; (local $viewdx f64);; viewdirection x coord
-		;; (local $viewdy f64)
-		;; (local $viewdz f64)
 		(local $tri f64);;	area of the triangle
 		(local $dt0 f64);;	distance to vertices
 		(local $dt1 f64)
@@ -450,6 +467,8 @@
 		(local $i20 f64)
 		(local $i	f64);;	arbitrary indeces
 		(local $j	f64);;	(signed)
+		(local $ks	i32);;	early loop end
+		(local $ke	i32)
 	;;END	LOCAL DECLARATION
 
 	;;START	PROJECTION EVALUATION
@@ -594,10 +613,10 @@
 
 	;;START	MAIN IF BLOCK (IF SOME OF TRI IS IN CANVAS BOUNDS)
 	;;if at least some of the triangle is inside the canvas bounds
-		(local.set $xb0 (call $min (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(local.set $yb0 (call $min (local.get $yr0) (local.get $yr1) (local.get $yr2)))
-		(local.set $xb1 (call $max (local.get $xr0) (local.get $xr1) (local.get $xr2)))
-		(local.set $yb1 (call $max (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(local.set $xb0 (call $min3 (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.set $yb0 (call $min3 (local.get $yr0) (local.get $yr1) (local.get $yr2)))
+		(local.set $xb1 (call $max3 (local.get $xr0) (local.get $xr1) (local.get $xr2)))
+		(local.set $yb1 (call $max3 (local.get $yr0) (local.get $yr1) (local.get $yr2)))
 						(i32.ge_s (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)));;(i32.const -640))
 						(i32.ge_s (local.get $xb1) (i32.div_s (i32.mul (i32.const -1) (i32.load (i32.const 1))) (i32.const 2)))
 				(i32.or)
@@ -619,6 +638,14 @@
 
 		(if	  ;;the start of the main
 		(then ;;if block
+			;; (local.tee $xb0 (call $max2 (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 1))) (i32.const 2))))
+			;; (call $log)
+			;; (local.tee $yb0 (call $max2 (local.get $yb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 5))) (i32.const 2))))
+			;; (call $log)
+			;; (local.tee $xb1 (call $min2 (local.get $xb1) (i32.div_s 							(i32.load (i32.const 1))) (i32.const 2)))
+			;; (call $log)
+			;; (local.tee $yb1 (call $min2 (local.get $yb1) (i32.div_s 							(i32.load (i32.const 5))) (i32.const 2)))
+			;; (call $log)
 
 			;;START evaluate area of triangle * 2
 				;;		i		j		k
@@ -718,15 +745,19 @@
 
 				;;loop logic (set i to 0, increment j, break if over)
 				(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $j)) (local.get $yb1)))
-				(local.set $i (f64.convert_i32_s (local.get $xb0)))
-				(local.set $j (call $increment (local.get $j)))
+				(local.set $i  (f64.convert_i32_s (local.get $xb0)))
+				(local.set $j  (call $increment (local.get $j)))
+				(local.set $ke (i32.const 0))
+				(local.set $ks (i32.const 0))
 
 				(block
 				(loop ;;loop through the y bounds of the projected triangle
 					;;FOLD HERE if the point is in the triangle or on a valide edge or vertex	
 					
 					;;loop logic (end part) (increment, break if over)
-					(br_if 1 (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)))
+					(br_if 1 (i32.or (i32.ge_s (i32.trunc_f64_s (local.get $i)) (local.get $xb1)) (local.get $ke)))
+
+
 
 						;; if the point is in the triangle v0-v1 edge
 										(local.get $i) ;;P.x
