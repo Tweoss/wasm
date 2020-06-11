@@ -95,7 +95,7 @@
 )
 
 
-(func $projx (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewrightx f64) (param $viewrighty f64) (param $viewrightz f64) (result f64)
+(func $projx (export "projx") (param $x f64) (param $y f64) (param $z f64) (param $viewx f64) (param $viewy f64) (param $viewz f64) (param $viewdirx f64) (param $viewdiry f64) (param $viewdirz f64) (param $viewrightx f64) (param $viewrighty f64) (param $viewrightz f64) (result f64)
 	(local $c f64)
 	;;solve for c
 	;;viewdir dotted with (viewdir-c*(xyz-view)) = 0
@@ -436,7 +436,6 @@
 ;;(with highest x (or y (or z))) (maybe)
 
 (func $trishade (export "trishade") (param $x0 f64) (param $y0 f64) (param $z0 f64) (param $x1 f64) (param $y1 f64) (param $z1 f64) (param $x2 f64) (param $y2 f64) (param $z2 f64) (param $color i32)
-
 	;;START	LOCAL DECLARATION
 		(local $xr0 i32);;	canvas coords
 		(local $yr0 i32);;	(rounded)
@@ -472,13 +471,28 @@
 	;;END	LOCAL DECLARATION
 
 	;;START	PROJECTION EVALUATION
-		(local.set $xr0 (i32.trunc_f64_s (local.tee $xc0 (f64.mul (f64.const -1) 	(call $projx (local.get $x0) (local.get $y0) (local.get $z0) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) )))))
-		(local.set $yr0 (i32.trunc_f64_s (local.tee $yc0 							(call $projy (local.get $x0) (local.get $y0) (local.get $z0) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
-		(local.set $xr1 (i32.trunc_f64_s (local.tee $xc1 (f64.mul (f64.const -1) 	(call $projx (local.get $x1) (local.get $y1) (local.get $z1) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) )))))
-		(local.set $yr1 (i32.trunc_f64_s (local.tee $yc1 							(call $projy (local.get $x1) (local.get $y1) (local.get $z1) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
-		(local.set $xr2 (i32.trunc_f64_s (local.tee $xc2 (f64.mul (f64.const -1) 	(call $projx (local.get $x2) (local.get $y2) (local.get $z2) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) )))))
-		(local.set $yr2 (i32.trunc_f64_s (local.tee $yc2 							(call $projy (local.get $x2) (local.get $y2) (local.get $z2) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
+		(local.tee $xr0 (i32.trunc_f64_s (local.tee $xc0 (call $projx (local.get $x0) (local.get $y0) (local.get $z0) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) ))))
+		(call $log)
+		(local.tee $yr0 (i32.trunc_f64_s (local.tee $yc0 (call $projy (local.get $x0) (local.get $y0) (local.get $z0) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
+		(call $log)
+		(local.tee $xr1 (i32.trunc_f64_s (local.tee $xc1 (call $projx (local.get $x1) (local.get $y1) (local.get $z1) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) ))))
+		(call $log)
+		(local.tee $yr1 (i32.trunc_f64_s (local.tee $yc1 (call $projy (local.get $x1) (local.get $y1) (local.get $z1) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
+		(call $log)
+		(local.tee $xr2 (i32.trunc_f64_s (local.tee $xc2 (call $projx (local.get $x2) (local.get $y2) (local.get $z2) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 81)) (f64.load (i32.const 89)) (f64.load (i32.const 97)) ))))
+		(call $log)
+		(local.tee $yr2 (i32.trunc_f64_s (local.tee $yc2 (call $projy (local.get $x2) (local.get $y2) (local.get $z2) (f64.load (i32.const 9)) (f64.load (i32.const 17)) (f64.load (i32.const 25)) (f64.load (i32.const 33)) (f64.load (i32.const 41)) (f64.load (i32.const 49)) (f64.load (i32.const 57)) (f64.load (i32.const 65)) (f64.load (i32.const 73)) ))))
+		(call $log)
 	;;END	PROJECTION EVALUATION
+
+;; (f64.mul (f64.const -1) 	;;
+							;;
+;; (f64.mul (f64.const -1) 	;;
+							;;
+;; (f64.mul (f64.const -1) 	;;
+							;;
+
+
 
 	;;START Counterclockwise EDGE TRUTH EVALUATION
 		;; 	(local.get $yc1) ;;next vertex
@@ -625,7 +639,7 @@
 				(i32.or)
 			(i32.or)
 						(i32.lt_s (local.get $xb0) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)));;i32.const 640
-						(i32.lt_s (local.get $xb1) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)))
+						(i32.lt_s (local.get $xb1) (i32.div_s (i32.load (i32.const 1)) (i32.const 2)));;2560,1440 1280, 720
 				(i32.or)
 						(i32.lt_s (local.get $yb0) (i32.div_s (i32.load (i32.const 5)) (i32.const 2)));;i32.const 360
 						(i32.lt_s (local.get $yb1) (i32.div_s (i32.load (i32.const 5)) (i32.const 2)))
@@ -738,6 +752,11 @@
 				(local.set $dt2)
 			;;END	evaluate dist to each vertex
 
+
+			;; (local.get $xr0) (local.get $xr1) (local.get $xr2)
+			;; (call $log )
+			;; (call $log )
+			;; (call $log )
 
 			(local.set $j (f64.convert_i32_s (local.get $yb0)))
 			(block

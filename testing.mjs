@@ -4,7 +4,7 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
-var logging = false;
+var logging = true;
 
 function consoleLogOne(log) {
 	console.log(log);
@@ -184,15 +184,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		color = parseInt("D62A26FF",16);
 		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
 		results.instance.exports.trishade(05,10,10, 05,90,90, 05,90,10,color);
-		color = parseInt("0F03E8FF",16);
-		results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
-		results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
-		color = parseInt("FF9800FF",16);
-		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
-		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
-		color = parseInt("61D9F1FF",16);
-		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
-		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
+		// color = parseInt("0F03E8FF",16);
+		// results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
+		// results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
+		// color = parseInt("FF9800FF",16);
+		// results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		// results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
+		// color = parseInt("61D9F1FF",16);
+		// results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		// results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
 		logging&&console.timeEnd("WASM")
 		logging&&console.time("Copy to buffer")
 		for (var i = 0; i < data.length; i += 4){
