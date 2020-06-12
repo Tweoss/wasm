@@ -570,20 +570,20 @@
 		(then ;;if block
 
 			;; (local.get $xb0 )
-			;; (call $log)
 			;; (local.get $yb0 )
-			;; (call $log)
 			;; (local.get $xb1 )
-			;; (call $log)
 			;; (local.get $yb1 )
 			;; (call $log)
-			(local.set $xb0 (call $max2 (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 1)) (i32.const 2)))))
 			;; (call $log)
-			(local.set $yb0 (call $max2 (local.get $yb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 5)) (i32.const 2)))))
 			;; (call $log)
+			;; (call $log)
+			(local.set $xb0 (call $max2 (local.get $xb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 1))) (i32.const 2))))
+			(local.set $yb0 (call $max2 (local.get $yb0) (i32.div_s (i32.mul (i32.const -1) 	(i32.load (i32.const 5))) (i32.const 2))))
 			(local.set $xb1 (call $min2 (local.get $xb1) (i32.div_s 							(i32.load (i32.const 1)) (i32.const 2))))
-			;; (call $log)
 			(local.set $yb1 (call $min2 (local.get $yb1) (i32.div_s 							(i32.load (i32.const 5)) (i32.const 2))))
+			;; (call $log)
+			;; (call $log)
+			;; (call $log)
 			;; (call $log)
 
 			;;START evaluate area of triangle * 2

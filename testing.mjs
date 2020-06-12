@@ -4,7 +4,7 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
-var logging = false;
+var logging = true;
 
 function consoleLogOne(log) {
 	console.log(log);
@@ -36,8 +36,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
 	
 	//VARIABLES
-	// var viewpoint 	= {x:20, y:-37, z: 98};
-	var viewpoint 	= {x:  0, y:  0, z: 01};
+	var viewpoint 	= {x:2, y:-37, z: 98};
+	// var viewpoint 	= {x:  0, y:  0, z: 01};
 	var viewup 		= {x:  0, y:  0, z:  1};
 	var viewdir 	= {x:100, y:  0, z:  0};
 	var viewright	= {x:  0, y: -1, z:  0};
@@ -179,8 +179,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	ctx.putImageData(imageData, 0, 0);
 
 	function redraw(){
+		
 		logging&&console.time("WASM")
 		heap.fill(0,offset);
+
 		color = parseInt("D62A26FF",16);
 		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
 		results.instance.exports.trishade(05,10,10, 05,90,90, 05,90,10,color);
@@ -236,17 +238,17 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		reView();
 		
 		// for (var i = offset; i < data.length*3+offset; i += period) {
-			// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
-			// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
-			// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
-			// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
-			// }
-			logging&&console.time("Copy to Canvas")
-			ctx.putImageData(imageData, 0, 0);
-			logging&&console.timeEnd("Copy to Canvas")
-			// ctx.drawImage(imageData, 0, 0);
-			requestAnimationFrame(redraw);	
-		}
+		// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
+		// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
+		// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
+		// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
+		// }
+		logging&&console.time("Copy to Canvas")
+		ctx.putImageData(imageData, 0, 0);
+		logging&&console.timeEnd("Copy to Canvas")
+		// ctx.drawImage(imageData, 0, 0);
+		requestAnimationFrame(redraw);	
+	}
 		redraw();
 		
 		
