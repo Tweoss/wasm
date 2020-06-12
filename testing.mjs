@@ -4,7 +4,7 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
-var logging = true;
+var logging = false;
 
 function consoleLogOne(log) {
 	console.log(log);
@@ -36,8 +36,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
 	
 	//VARIABLES
-	var viewpoint 	= {x:-15, y:-37, z: 98};
-	// var viewpoint 	= {x:  0, y:  0, z: 01};
+	// var viewpoint 	= {x:20, y:-37, z: 98};
+	var viewpoint 	= {x:  0, y:  0, z: 01};
 	var viewup 		= {x:  0, y:  0, z:  1};
 	var viewdir 	= {x:100, y:  0, z:  0};
 	var viewright	= {x:  0, y: -1, z:  0};
@@ -65,19 +65,19 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		}
 		else if (event.key === 'w') {
 			keyDownFlags[2] = 1;
-			viewpoint.y--;
+			// viewpoint.y--;
 		}
 		else if (event.key === 'a') {
 			keyDownFlags[3] = 1;
-			viewpoint.y--;
+			// viewpoint.y--;
 		}
 		else if (event.key === 's') {
 			keyDownFlags[4] = 1;
-			viewpoint.y--;
+			// viewpoint.y--;
 		}
 		else if (event.key === 'd') {
 			keyDownFlags[5] = 1;
-			viewpoint.y--;
+			// viewpoint.y--;
 		}
 		reView();
 	});
@@ -184,15 +184,15 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		color = parseInt("D62A26FF",16);
 		results.instance.exports.trishade(05,10,10, 05,10,90, 05,90,90,color);
 		results.instance.exports.trishade(05,10,10, 05,90,90, 05,90,10,color);
-		// color = parseInt("0F03E8FF",16);
-		// results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
-		// results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
-		// color = parseInt("FF9800FF",16);
-		// results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
-		// results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
-		// color = parseInt("61D9F1FF",16);
-		// results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
-		// results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
+		color = parseInt("0F03E8FF",16);
+		results.instance.exports.trishade(90,10,10, 90,10,90, 90,90,90,color);
+		results.instance.exports.trishade(90,10,10, 90,90,90, 90,90,10,color);
+		color = parseInt("FF9800FF",16);
+		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
+		color = parseInt("61D9F1FF",16);
+		results.instance.exports.trishade(05,10,10, 90,10,10, 05,10,90,color);
+		results.instance.exports.trishade(05,10,90, 90,10,10, 90,10,90,color);
 		logging&&console.timeEnd("WASM")
 		logging&&console.time("Copy to buffer")
 		for (var i = 0; i < data.length; i += 4){
@@ -214,9 +214,9 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 			viewpoint.z += viewup.z;
 		}
 		if (keyDownFlags[2] == 1) {
-			viewpoint.x += viewndir.x;
-			viewpoint.y += viewndir.y;
-			viewpoint.z += viewndir.z;
+			viewpoint.x += .1*viewndir.x;
+			viewpoint.y += .1*viewndir.y;
+			viewpoint.z += .1*viewndir.z;
 		}
 		if (keyDownFlags[3] == 1) {
 			viewpoint.x -= viewright.x;
