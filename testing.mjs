@@ -216,9 +216,9 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 			viewpoint.z += viewup.z;
 		}
 		if (keyDownFlags[2] == 1) {
-			viewpoint.x += .1*viewndir.x;
-			viewpoint.y += .1*viewndir.y;
-			viewpoint.z += .1*viewndir.z;
+			viewpoint.x += viewndir.x;
+			viewpoint.y += viewndir.y;
+			viewpoint.z += viewndir.z;
 		}
 		if (keyDownFlags[3] == 1) {
 			viewpoint.x -= viewright.x;
