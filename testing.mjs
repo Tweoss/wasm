@@ -5,23 +5,9 @@ Bezier curve generating mesh or straight to canvas
 /*        *///
 
 var logging = true;
-
-function consoleLogOne(log) {
-	console.log(log);
+if (logging == undefined){
+	var logging = false;
 }
-
-
-const memory = new WebAssembly.Memory({
-	initial: 676,//for my monitor
-	maximum: 1024
-});
-const heap = new Uint8Array(memory.buffer);
-const imports = {
-	env: {
-		memory: memory,
-		log: consoleLogOne
-	}
-};
 
 var canvas = document.getElementById('myCanvas');
 canvas.width = window.innerWidth;
@@ -31,6 +17,24 @@ var ctx = canvas.getContext('2d');
 // ctx.imageSmoothingEnabled = false;
 var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 var data = imageData.data;
+
+
+var reee = canvas.width*canvas.height*12/(64*1024)+1;
+const memory = new WebAssembly.Memory({
+	initial: reee,//for my monitor
+	maximum: 1024
+});
+
+function consoleLogOne(log) {
+	console.log(log);
+}
+const imports = {
+	env: {
+		memory: memory,
+		log: consoleLogOne
+	}
+};
+
 
 WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 .then(results => {
@@ -47,6 +51,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	var offset = 114;
 	var period = 12;
 	var keyDownFlags = [0,0,0,0,0,0];
+	const heap = new Uint8Array(memory.buffer);
 	
 	canvas.addEventListener('click', function(event) {
 			canvas.requestPointerLock = canvas.requestPointerLock ||
@@ -128,7 +133,8 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 	//	33-56	- viewupx,y,z
 	//	57-80	- viewdirx,y,z
 	//	81-104	- viewrightx,y,z
-	//	105-113	- intermediate calcs
+	//	105-112	- intermediate calcs
+	//	113-116	- flags
 
 	//	offset	- triangle
 	//	0-3	- little endian
@@ -198,9 +204,10 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 		logging&&console.timeEnd("WASM")
 		logging&&console.time("Copy to buffer")
 		for (var i = 0; i < data.length; i += 4){
-			data[i]		= heap[i*period/4+offset+3];
-			data[i + 1]	= heap[i*period/4+offset+1];
-			data[i + 2]	= heap[i*period/4+offset+2];
+			var temp = i*period/4+offset;
+			data[i]		= heap[temp+3];
+			data[i + 1]	= heap[temp+1];
+			data[i + 2]	= heap[temp+2];
 			data[i + 3]	= 255;
 		}
 		logging&&console.timeEnd("Copy to buffer")
@@ -236,13 +243,7 @@ WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
 			viewpoint.z += viewright.z;
 		}
 		reView();
-		
-		// for (var i = offset; i < data.length*3+offset; i += period) {
-		// 	data[(i			- offset)/3] = heap[i + 3]; //9   - data[i];     // red
-		// 	data[(i + 1 	- offset)/3] = heap[i + 2]; //255 - data[i + 1]; // green
-		// 	data[(i + 2 	- offset)/3] = heap[i + 1]; //255 - data[i + 2]; // blue
-		// 	data[(i + 3 	- offset)/3] = heap[i];     //255;               //alpha
-		// }
+
 		logging&&console.time("Copy to Canvas")
 		ctx.putImageData(imageData, 0, 0);
 		logging&&console.timeEnd("Copy to Canvas")
