@@ -4,7 +4,7 @@ Bezier curve generating mesh or straight to canvas
 
 /*        *///
 
-var logging = true;
+// var logging = true;
 if (logging == undefined){
 	var logging = false;
 }
@@ -36,7 +36,7 @@ const imports = {
 };
 
 
-WebAssembly.instantiateStreaming(fetch('testing.wasm'),imports)
+WebAssembly.instantiateStreaming(fetch('testingoptimized.wasm'),imports)
 .then(results => {
 	
 	//VARIABLES
